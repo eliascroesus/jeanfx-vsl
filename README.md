@@ -2,11 +2,15 @@
 
 Source material for breaking down and editing the VSL. Nothing here has been edited yet.
 
+**Start here:** [the breakdown of Jean's raw VSL](03-raw-vsl-footage/BREAKDOWN.md): structure, how it maps onto
+AB Trades' VSL, the numbers to check, notes for the edit and open questions for Jean.
+
 | Folder | What goes in it |
 | --- | --- |
-| [`01-vsls/`](01-vsls/) | Jean's current VSL (`current-vsl/`) and example VSLs to learn from (`reference-vsls/`) |
-| [`02-results-and-b-roll/`](02-results-and-b-roll/) | Everything else, all in one place: results, testimonials, B-roll, photos, journey pictures, context |
-| [`03-raw-vsl-footage/`](03-raw-vsl-footage/) | The raw, unedited recording of the VSL that needs editing |
+| [`01-vsls/`](01-vsls/) | Jean's current VSL (`current-vsl/`) and example VSLs to learn from (`reference-vsls/`, broken down in [BREAKDOWN.md](01-vsls/reference-vsls/BREAKDOWN.md)) |
+| [`02-results-and-b-roll/`](02-results-and-b-roll/) | Everything else, all in one place: results, testimonials, B-roll, photos, journey pictures, context (mapped in [ASSET-MAP.md](02-results-and-b-roll/ASSET-MAP.md)) |
+| [`03-raw-vsl-footage/`](03-raw-vsl-footage/) | The raw, unedited recording of the VSL that needs editing ([TRANSCRIPT.md](03-raw-vsl-footage/TRANSCRIPT.md), [BREAKDOWN.md](03-raw-vsl-footage/BREAKDOWN.md)) |
+| [`04-edit/`](04-edit/) | The editing setup (nothing to upload here) |
 
 ## Uploading
 
