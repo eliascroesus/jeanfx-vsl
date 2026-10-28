@@ -96,6 +96,7 @@ NOCAP = []        # windows without bottom captions
 CENTER = []       # windows where captions go to the middle (over B-roll)
 DARKCAP = []      # windows where captions are black (over a white chart plate)
 HIDEALL = []      # windows with no captions at all, even over B-roll
+MONEY = []        # (time, sound, dB): cha-ching moments
 PROOF = (m(s("So guys")), m(s("So I was able")))
 NOCAP.append(PROOF)
 
@@ -239,6 +240,7 @@ for i, (img, w, h, cx, cy) in enumerate(flashes):
     click(a, -26)
 for i, (img, w, h) in enumerate(big):
     a = t_big + i * 0.65
+    MONEY.append((a + 0.05, "cash_light" if i == 0 else "cash_light_up", -17))
     card(img, a, a + 0.65 if i == 0 else fb, 960, 540, w=w, h=h, anim="cut", z=61, radius=16, shadow=0.25)
     click(a, -22)
 zoom(m(s("But I'm going")), 1.22, ease="cut")
@@ -271,7 +273,7 @@ add(type="counter", t0=ma, t1=mb, t_count=ma, dur=1.0, v0=999, v1=120000, x=960,
 text(t_sub1, t_sub2, [line("in prop firm payouts", "medium", 96, BLACK, 960, 680, t_sub1, align="center", track=-4)])
 text(t_sub2, mb, [line("& live account withdrawals", "medium", 96, BLACK, 960, 680, t_sub2, align="center", track=-4)])
 sfx("whoosh_long", ma, -20, 0.2)
-sfx("flutter", ma + 0.1, -22)
+sfx("money_spray", ma + 0.05, -17)
 click(t_sub1)
 click(t_sub2)
 zoom(m(s("Here's exactly")), 1.0, ease="cut")
@@ -420,6 +422,7 @@ keynote(s("I came to the United States"), s("After school"), [("I came to the U.
 da, db_ = m(s("After school")), m(s("Guess what", 200))
 plate(da, db_, (0, 0, 0))
 add(type="earnings", t0=da, t1=db_, cx=1390, cy=540, total=500, z=60)
+MONEY.append((m(s("making $500")) + 0.1, "cash_light", -16))
 mclick(da)
 text(da, db_, [line("DoorDashing", "medium", 84, WHITE, 600, 430, da, align="center", track=-4),
                line("till midnight", "medium", 84, WHITE, 600, 530, m(s("to midnight")), align="center", track=-4),
@@ -540,6 +543,7 @@ side("L", s("So this is where you stop"), s("No setups"), [("stop being", "reg",
 zoom(m(s("No setups")), 1.22, ease="cut")
 zoom(m(s("And this setup comes")), 1.0, dur=0.35)
 pa2 = m(s("So the account you pass"))
+MONEY.append((pa2 + 0.1, "cash", -14))
 card("ftmo_account", pa2, m(s("This is my student")), 1450, 520, w=640, anim="pop", border=8, radius=18, shadow=0.5, z=60)
 add(type="grad", t0=pa2, t1=m(s("This is my student")), kind="right", fade=0.15, strength=0.8, z=20)
 sfx("whoosh", pa2, -22, 0.1); click(pa2 + 0.05)
@@ -568,12 +572,14 @@ text(xa, xb, [line("he made over", "medium", 84, BLACK, 960, 170, xa, align="cen
 card("kibron_10028", xa + 0.1, xb, 560, 560, w=560, anim="pop", radius=16, shadow=0.35, rot=4, z=60)
 card("kibron_7446", xa + 0.45, xb, 1360, 560, w=560, anim="pop", radius=16, shadow=0.35, rot=-4, z=61)
 card("kibron_17475", m(s("$20,000", 360)), xb, 960, 560, w=600, anim="pop", radius=16, shadow=0.45, z=62)
+MONEY.append((m(s("$20,000", 360)) + 0.05, "cash", -13))
 for tt in (xa + 0.1, xa + 0.45, m(s("$20,000", 360))):
     click(tt)
 sfx("whoosh", xa, -24, 0.12)
 lwa, lwb = m(s("I have Lawrence")), m(s("Like, look at"))
 plate(lwa, lwb, (0, 0, 0))
 card("lawrence_6196", lwa, lwb, 600, 540, w=640, anim="fade", border=6, radius=4, z=60)
+MONEY.append((m(s("making over")) + 0.2, "cash", -14))
 text(lwa, lwb, [line("I have", "medium", 84, WHITE, 1320, 470, lwa, align="center", track=-4),
                 line("LAWRENCE", "black", 140, WHITE, 1320, 610, m(s("Lawrence")), align="center", track=-6),
                 line("over $6,000 in payouts", "medium", 72, WHITE, 1320, 710, m(s("making over")), align="center", track=-3)])
@@ -588,9 +594,11 @@ des = [("desmond_406", 520, 330, -5), ("desmond_162", 1400, 320, 4), ("desmond_9
        ("desmond_277", 960, 300, -2), ("desmond_341", 960, 780, 2)]
 anc = [s("consistent payouts"), s("over and over"), s("and over", s("over and over") + 0.1), s("and over again"), s("again", s("and over again")) ]
 times_d = [m(x) for x in anc] + [m(s("again", s("and over again"))) + 0.25]
-for (img, cx, cy, r), tt in zip(des, times_d):
+for k, ((img, cx, cy, r), tt) in enumerate(zip(des, times_d)):
     card(img, tt, ob3, cx, cy, w=620, anim="pop", radius=14, shadow=0.35, rot=r, z=60)
     click(tt)
+    if k in (0, len(des) - 1):
+        MONEY.append((tt + 0.05, "cash_light" if k == 0 else "cash", -15))
 sfx("whoosh", oa3, -24, 0.1)
 zoom(ob3, 1.22, ease="cut")
 wla, wlb = m(s("These are the same students")), m(s("And that's what I teach"))
@@ -727,10 +735,11 @@ gpa, gpb = kb2, m(s("I'll go ahead and work"))
 plate(gpa, gpb, PLATE_WHITE)
 add(type="drop", t0=gpa, t1=gpb + 0.01, layer="far", seed=11, n=14, near_n=4, z=40)
 add(type="drop", t0=gpa, t1=gpb + 0.01, layer="near", seed=11, n=14, near_n=4, z=90)
+MONEY.append((gpa + 0.45, "cash", -12))
 card("topstep_19770", gpa + 0.1, gpb, 1360, 540, h=760, anim="fly", **{"from": [0, 500], "dur": 0.45}, radius=18, shadow=0.45, z=60)
 text(gpa, gpb, [line("Get a Payout", "bold", 120, BLACK, 560, 520, gpa, align="center", track=-5),
                 line("within 90 days", "medium", 92, BLACK, 560, 630, m(s("within those 90")), align="center", track=-4)])
-sfx("whoosh", gpa, -22, 0.1); sfx("flutter", gpa + 0.1, -22)
+sfx("whoosh", gpa, -22, 0.1); sfx("money_spray", gpa + 0.05, -18)
 click(gpa); click(m(s("within those 90")))
 zoom(gpb, 1.22, ease="cut")
 t_ww = m(s("work with you", 504))
@@ -879,9 +888,14 @@ def add_sfx_pass():
             sfx("whoosh", d["t0"], -25, 0.12)
         if d["type"] == "counter":
             dur = d.get("dur", 1.1)
-            name = "roll08" if dur < 0.9 else "roll10" if dur < 1.2 else "roll14"
-            sfx(name, d.get("t_count", d["t0"]), -24)
-            sfx("pop", d.get("t_count", d["t0"]) + dur * 0.92, -19)
+            tc = d.get("t_count", d["t0"])
+            if d["v1"] >= d["v0"]:                               # money coming in: counter run, then cha-ching
+                name = min(["count_up08", "count_up09", "count_up10", "count_up14"], key=lambda n_: abs(int(n_[-2:]) / 10 - dur))
+                sfx(name, tc, -19)
+                sfx("cash", tc + dur * 0.9, -13)
+            else:                                                 # a balance draining away: falling run, then a thud
+                sfx("count_down14", tc, -19)
+                sfx("thud", tc + dur * 0.95, -15)
         if d["type"] == "text":
             for L in d["lines"]:
                 if L.get("reveal") == "type":
@@ -900,6 +914,19 @@ def add_sfx_pass():
     for z in ZOOM:
         if z.get("ease") == "out" and z["z"] > 1.1:
             sfx("swish", z["t"], -31, 0.05)
+    # cha-ching on the money moments
+    for t, name, dbv in MONEY:
+        sfx(name, t, dbv)
+    # Jean saying an amount in the proof section (lighter, never closer than 1.5 s)
+    last = -9.0
+    for w in WORDS:
+        o = m(w["s"])
+        if not (PROOF[0] <= o < PROOF[1]) or raw_in_cut(w["s"]):
+            continue
+        if re.match(r"^\$\d", w["w"]) or norm(w["w"]) in ("thousand",):
+            if o - last > 1.5:
+                sfx("cash_light", o + 0.15, -19)
+                last = o
     # no plain tick on top of a mouse click
     mc = [x["t"] for x in SFX if x["name"].startswith("mclick")]
     SFX[:] = [x for x in SFX if not (x["name"].startswith("click") and any(abs(x["t"] - t) < 0.06 for t in mc))]
@@ -914,7 +941,7 @@ def main():
         z.pop("side", None)
     add_sfx_pass()
     edit = {"total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL, "sfx": sorted(SFX, key=lambda x: x["t"]),
-            "zoom": sorted(ZOOM, key=lambda x: x["t"]), "music_under_lu": 15.0,
+            "zoom": sorted(ZOOM, key=lambda x: x["t"]), "music_under_lu": 12.0, "sfx_gain_db": 2.5,
             "cuts_raw": [[round(a, 3), round(b, 3)] for a, b in CUTS]}
     json.dump(edit, open(out, "w"), indent=0)
     n_cap = sum(1 for d in EL if d["type"] == "text" and d.get("z") == 84)

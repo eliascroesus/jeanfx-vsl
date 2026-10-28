@@ -14,7 +14,7 @@ uploading; it's the editing setup.
 | `scripts/elements.py` | Every AB element: plates, cards, counters, the "Available Balance" pill, PIP name card, split screen, slide-up transition, text behind his head, rolling list, Discord wall, chart animations, B-roll stills |
 | `scripts/fx.py` | AB's text: Inter Display (closest free match to SF Pro Display), his sizes and tight spacing, the letter-by-letter blur-in, soft shadow, blue glow |
 | `scripts/money.py` | The money drop (bills tumbling in 3D with motion blur and depth blur), the money B-roll, flames |
-| `scripts/mix.py` | Voice clean-up, the song bed 15 LU under the voice (AB's level, constant), sound effects, mastered to −14 LUFS |
+| `scripts/mix.py` | Voice clean-up, the song bed 12 LU under the voice (3 dB above AB's level, as asked in v3; constant, never ducked), sound effects (+2.5 dB in v3; money sounds built from VSCO 2 CE recordings, CC0), mastered to −14 LUFS |
 | `scripts/song_bed.py` | "Me And The Devil" (instrumental) with the boom removed, looped the way AB loops it |
 | `scripts/assets.py` | Certificate crops from the Discord screenshots in `02-results-and-b-roll/`, the blurred chart, signal card, phone mockup, "account breached" email, 3D objects |
 | `scripts/motion.py` | Motion graphics in place of AB's stock footage: moving light gradients, rising dollar signs, embers, city-light bokeh, self-drawing glowing charts, a neural-network brain, an earnings card, a time card, a marker circle |
@@ -46,7 +46,10 @@ copyrighted and this repo may be public); using it in a paid ad needs a licence.
   impact before "I put $4,000 in a live account". On top of AB's (v2): a mouse click on every image that pops up and
   on every page switch in the proof screen recording, ticks while counters run and a pop when they land, typing under
   the typed offer list, a soft swish on punch-ins and side text, a notification ding on the "account breached" email,
-  a marker sound on the chart circle, and a whoosh on every scene change.
+  a marker sound on the chart circle, and a whoosh on every scene change. v3: a cash-register "cha-ching" (drawer,
+  coins, bell, from real recordings) on every money moment, counters that tick up over a rising glockenspiel run and
+  land on a cha-ching (the "Available Balance" countdown falls instead and lands on a thud), a fuller money spray under
+  the money drops, and a light cha-ching each time Jean says an amount in the proof section.
 
 ## Cuts
 

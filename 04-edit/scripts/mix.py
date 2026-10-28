@@ -15,8 +15,8 @@ RAW = "/home/user/work/jean/jeanfxvsl.mov"
 BED = "/home/user/work/jean/bed"
 SONG = "/home/user/work/ref/an/song.wav"
 SCRIPTS = os.path.dirname(os.path.abspath(__file__))
-VOICE_CHAIN = ("highpass=f=75:poles=2,equalizer=f=220:t=q:w=1.1:g=-2,equalizer=f=3200:t=q:w=1.0:g=2,"
-               "treble=g=1.5:f=9000,acompressor=threshold=-26dB:ratio=3:attack=6:release=140:knee=4:makeup=5,"
+VOICE_CHAIN = ("highpass=f=75:poles=2,equalizer=f=220:t=q:w=1.1:g=-2,equalizer=f=3200:t=q:w=1.0:g=0.8,"
+               "treble=g=0.5:f=9000,acompressor=threshold=-26dB:ratio=3:attack=6:release=140:knee=4:makeup=5,"
                "deesser=i=0.35,alimiter=limit=0.89:level=false")
 
 
@@ -39,6 +39,78 @@ def stereo(x, width=0.0, seed=0):
     r = np.random.default_rng(seed)
     d = int(0.0006 * SR)
     return np.stack([x, np.roll(x, d) * (1 - width * 0.2)], 1)
+
+
+VSCO = "/home/user/work/vsco/repo"     # Versilian Studios Chamber Orchestra 2 Community Edition (CC0)
+
+
+def sample(rel):
+    x, sr = sf.read(f"{VSCO}/{rel}", always_2d=True)
+    x = x.mean(1)
+    if sr != SR:
+        x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * SR / sr)), np.arange(len(x)), x)
+    i = int(np.argmax(np.abs(x) > 0.02 * np.abs(x).max()))
+    x = x[max(0, i - 48):]
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def pitch(x, semis):
+    r = 2 ** (semis / 12)
+    return np.interp(np.arange(0, len(x) - 1, r), np.arange(len(x)), x)
+
+
+def lay(buf, x, at, g=1.0):
+    s0 = int(at * SR)
+    n = min(len(x), len(buf) - s0)
+    if n > 0:
+        buf[s0:s0 + n] += x[:n] * g
+
+
+def cash(light=False, semis=0.0):
+    """Cash register "cha-ching": the drawer (tambourine hit, bright and short), coins (sleigh bells), and the bell
+    (glockenspiel C7 + triangle)."""
+    n = int(1.6 * SR)
+    out = np.zeros(n)
+    cha = bp(sample("Miscellania Raw/Misc 2/tamb2_1.wav"), 2000, 10000)[: int(0.18 * SR)]
+    cha *= env(len(cha), 0.001, 0.045)
+    thunk = sample("Miscellania Raw/Misc 1/metal_hit3.wav")[: int(0.15 * SR)]
+    thunk = signal.sosfiltfilt(signal.butter(4, 1800, "low", fs=SR, output="sos"), thunk) * env(len(thunk), 0.001, 0.04)
+    coins = bp(sample("Miscellania Raw/Misc 2/sleighbell1_hit_1.wav"), 2500, 14000)[: int(0.45 * SR)]
+    coins *= env(len(coins), 0.002, 0.12)
+    bell = pitch(sample("Percussion/Glock/glock_medium_C7.wav"), semis)[: int(1.3 * SR)]
+    bell *= env(len(bell), 0.001, 0.45)
+    bell2 = pitch(sample("Percussion/Glock/glock_medium_G6.wav"), semis)[: int(1.0 * SR)] * env(int(1.0 * SR), 0.001, 0.3)[: len(pitch(sample("Percussion/Glock/glock_medium_G6.wav"), semis)[: int(1.0 * SR)])]
+    tri = bp(sample("VSCO 1 Percussion/varMetal/triangle/1/triangle1_hit_mp.wav"), 2500, 16000)[: int(1.3 * SR)]
+    tri *= env(len(tri), 0.001, 0.4)
+    if not light:
+        lay(out, thunk, 0.0, 0.35)
+        lay(out, cha, 0.0, 0.55)
+    lay(out, coins, 0.07, 0.35 if not light else 0.22)
+    lay(out, bell2, 0.10, 0.35)
+    lay(out, bell, 0.13, 1.0)
+    lay(out, tri, 0.13, 0.22)
+    out = signal.sosfiltfilt(signal.butter(2, 11000, "low", fs=SR, output="sos"), out)
+    return norm(np.stack([out, np.roll(out, int(0.0005 * SR))], 1), 0.9)
+
+
+def counter_sound(dur, up=True, seed=0):
+    """A money counter: fast mechanical ticks slowing down like the number, over a glockenspiel run (up, or down for
+    a balance draining away)."""
+    r = np.random.default_rng(seed)
+    n = int((dur + 0.6) * SR)
+    out = np.zeros(n)
+    tick = bp(sample("Miscellania Raw/Misc 2/tamb3_2.wav"), 3000, 12000)[: int(0.03 * SR)] * env(int(0.03 * SR), 0.0005, 0.006)[: len(bp(sample("Miscellania Raw/Misc 2/tamb3_2.wav"), 3000, 12000)[: int(0.03 * SR)])]
+    N = 22
+    for i in range(N):
+        u = i / N
+        at = dur * (1 - (1 - u) ** (1 / 2.2))
+        semis = (u * 7 if up else -u * 7) + r.uniform(-0.3, 0.3)
+        lay(out, pitch(tick, semis), at, 0.55 * (1 - 0.35 * u))
+    gl = sample("Miscellania Raw/Misc 2/glock_glisses/" + ("glock_fx_up_chromatic_fast_01.wav" if up else "glock_fx_down_chromatic_fast_01.wav"))
+    gl = gl[: int(min(len(gl) / SR, dur + 0.5) * SR)]
+    gl *= np.linspace(1, 0.3, len(gl)) * env(len(gl), 0.01, 1.2)
+    lay(out, gl, 0.0, 0.3)
+    return norm(stereo(out, 0.4), 0.75)
 
 
 def make_sfx():
@@ -80,6 +152,27 @@ def make_sfx():
         m = int(0.03 * SR)
         x[s:s + m] += bp(r.standard_normal(m), 900, 6000) * env(m, 0.002, 0.008)[: len(x[s:s + m])]
     out["flutter"] = norm(stereo(x, 0.7), 0.6)
+    n = int(1.4 * SR)                                       # money spray: many bills flapping past
+    x = np.zeros(n)
+    for k in range(40):
+        s0 = int(r.uniform(0, 1.1) * SR)
+        m = int(r.uniform(0.04, 0.12) * SR)
+        tt = np.arange(m) / SR
+        flap = bp(r.standard_normal(m), r.uniform(700, 1500), r.uniform(4000, 8000)) * (0.5 + 0.5 * np.sin(2 * np.pi * r.uniform(25, 45) * tt))
+        x[s0:s0 + m] += flap * np.sin(np.pi * tt / tt[-1]) * r.uniform(0.4, 1.0)
+    x *= np.minimum(1, np.arange(n) / (0.15 * SR)) * np.minimum(1, (n - np.arange(n)) / (0.4 * SR))
+    L, R = x * np.linspace(1, 0.6, n), np.roll(x, int(0.003 * SR)) * np.linspace(0.6, 1, n)
+    out["money_spray"] = norm(np.stack([L, R], 1), 0.7)
+    out["cash"] = cash()
+    out["cash_light"] = cash(light=True)
+    out["cash_light_up"] = cash(light=True, semis=2)
+    for name, dur, up in [("count_up08", 0.8, True), ("count_up10", 1.0, True), ("count_up14", 1.4, True),
+                          ("count_down14", 1.4, False), ("count_up09", 0.9, True)]:
+        out[name] = counter_sound(dur, up)
+    n = int(0.7 * SR)                                       # balance hits $10: a low dull thud
+    t = np.arange(n) / SR
+    f = 110 * np.exp(-t / 0.25) + 55
+    out["thud"] = norm(stereo(np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.22) + bp(r.standard_normal(n), 80, 600) * np.exp(-t / 0.03) * 0.3), 0.8)
     for k in range(3):                                      # mouse click: press, then a softer release
         n = int(0.12 * SR)
         t = np.arange(n) / SR
@@ -195,7 +288,7 @@ def mix(edit, out_path):
     sfx_lib = make_sfx()
     fx = np.zeros((n + SR, 2))
     for s in edit.get("sfx", []):
-        x = sfx_lib[s["name"]].astype(np.float64) * db(lv + 12 + s.get("db", -20))   # dB relative to the voice level
+        x = sfx_lib[s["name"]].astype(np.float64) * db(lv + 12 + s.get("db", -20) + edit.get("sfx_gain_db", 0.0))   # dB relative to the voice level
         place(fx, x, s["t"] - s.get("lead", 0.0))
     mixd = voice[:n] + music[:n] + fx[:n]
     pre = out_path + ".pre.wav"
