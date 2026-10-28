@@ -14,7 +14,7 @@ uploading; it's the editing setup.
 | `scripts/elements.py` | Every AB element: plates, cards, counters, the "Available Balance" pill, PIP name card, split screen, slide-up transition, text behind his head, rolling list, Discord wall, chart animations, B-roll stills |
 | `scripts/fx.py` | AB's text: Inter Display (closest free match to SF Pro Display), his sizes and tight spacing, the letter-by-letter blur-in, soft shadow, blue glow |
 | `scripts/money.py` | The money drop (bills tumbling in 3D with motion blur and depth blur), the money B-roll, flames |
-| `scripts/mix.py` | Voice clean-up, the song bed 12 LU under the voice (3 dB above AB's level, as asked in v3; constant, never ducked), sound effects (+2.5 dB in v3; money sounds built from VSCO 2 CE recordings, CC0), mastered to −14 LUFS |
+| `scripts/mix.py` | Voice clean-up, the song bed 13.5 LU under the voice (1.5 dB above AB's level, set by ear in v3–v4; constant, never ducked), sound effects (+2.5 dB in v3; money sounds built from VSCO 2 CE recordings, CC0), mastered to −14 LUFS |
 | `scripts/song_bed.py` | "Me And The Devil" (instrumental) with the boom removed, looped the way AB loops it |
 | `scripts/assets.py` | Certificate crops from the Discord screenshots in `02-results-and-b-roll/`, the blurred chart, signal card, phone mockup, "account breached" email, 3D objects |
 | `scripts/motion.py` | Motion graphics in place of AB's stock footage: moving light gradients, rising dollar signs, embers, city-light bokeh, self-drawing glowing charts, a neural-network brain, an earnings card, a time card, a marker circle |
@@ -34,7 +34,7 @@ copyrighted and this repo may be public); using it in a paid ad needs a licence.
   while it's up.
 - **Zoom**: face shots alternate between wide and a 1.22× punch-in (0.3–0.35 s ease-out, or a hard cut), with a slow drift
   while holding. In the proof section the screen recording glides in on each number.
-- **Every graphic type**: screenshot flashes on a light-grey plate, PIP name card over a blurred chart, money-drop
+- **Every graphic type**: screenshots piling up on a light-grey plate (v4: they stack instead of replacing each other), PIP name card over a blurred chart, money-drop
   counter, proof screen recording, black counter with a coin flying in, money B-roll with a counter, "Available
   Balance" counting down to $10, white keynote cards, B-roll with captions in the middle, framed "Fear / Greed",
   brain card, two-figure age card, burning bill, rolling list, text behind his head ("ONE SETUP", "INDUCEMENT"), split

@@ -147,7 +147,7 @@ def text(a, b, lines, z=80):
 SIDE_STYLE = {"reg": ("medium", 92, -4), "bold": ("black", 128, -6), "blue": ("black", 128, -6), "num": ("black", 170, -8)}
 
 
-def side(sd, a, b, spec, dark=True, nocap=True):
+def side(sd, a, b, spec, dark=True, nocap=True, scale=1.0, cy=520):
     """AB's side text: stacked lines beside his head on a fade from that edge, each line on its word.
     spec: [(text, style, anchor phrase)] ; style reg/bold/blue/num."""
     A, B = m(a), m(b)
@@ -161,12 +161,12 @@ def side(sd, a, b, spec, dark=True, nocap=True):
     rows = []
     for txt, st, anc in spec:
         kind, size, tr = SIDE_STYLE[st]
-        size = fx.fit_size(kind, size, txt, tr, 560)
+        size = fx.fit_size(kind, size * scale, txt, tr * scale, 560 * min(scale, 1.12))
         rows.append((txt, st, anc, kind, size, tr))
     # baseline to baseline: this line's descender room + the next line's cap height + a little air (AB's spacing)
     gaps = [r[4] * 0.2 + (rows[i + 1][4] * 0.73 if i + 1 < len(rows) else 0) + 14 for i, r in enumerate(rows)]
     block = sum(gaps[:-1]) + rows[0][4] * 0.73
-    y = 520 - block / 2 + rows[0][4] * 0.73
+    y = cy - block / 2 + rows[0][4] * 0.73
     lines, cursor = [], a - 0.3
     for (txt, st, anc, kind, size, tr), g in zip(rows, gaps):
         try:
@@ -219,9 +219,10 @@ SIDES = []
 
 # ================================================================ THE EDIT
 # ---- HOOK ----------------------------------------------------------------------------------------------
-side("L", 0.0, s("start up"), [("Every one", "reg", "Every"), ("OF THESE", "bold", "of these"), ("VIDEOS", "blue", "videos")])
+HOOK = dict(scale=1.12, cy=560)
+side("L", 0.0, s("start up"), [("Every one", "reg", "Every"), ("OF THESE", "bold", "of these"), ("VIDEOS", "blue", "videos")], **HOOK)
 side("R", s("start up"), s("It's already"), [("start up", "reg", "start up"), ("THE SAME", "blue", "the same"),
-                                              ("exact way", "reg", "exact way")])
+                                              ("exact way", "reg", "exact way")], **HOOK)
 # screenshot after screenshot: flashes on AB's light-grey plate, then two big certificates
 fa, fb = m(s("It's already")), m(s("But I'm going"))
 plate(fa, fb, PLATE_GREY)
@@ -234,17 +235,24 @@ big = [("ftmo_26915", 0, 820), ("topstep_19770", 0, 860)]
 span = fb - fa
 t_big = fb - 1.3
 step = (t_big - fa) / len(flashes)
-for i, (img, w, h, cx, cy) in enumerate(flashes):
+# they pile up: each one lands on top of the last (slight tilt, soft shadow) and stays until the cut back to Jean
+spots = [(520, 380, -6), (1390, 330, 5), (760, 720, -3), (1300, 730, 4), (400, 690, -5), (1530, 560, 3), (980, 400, -2),
+         (650, 520, 6), (1180, 580, -4), (960, 740, 2)]
+for i, ((img, w, h, _, _), (cx, cy, rot)) in enumerate(zip(flashes, spots)):
     a = fa + i * step
-    card(img, a, a + step, cx, cy, w=w, h=h or 0, anim="cut", z=60)
-    click(a, -26)
+    card(img, a, fb, cx, cy, w=int(w * 0.8) if w else 0, h=int(h * 0.8) if h else 0, anim="pop", z=60 + i,
+         radius=10, shadow=0.5, rot=rot)
 for i, (img, w, h) in enumerate(big):
     a = t_big + i * 0.65
     MONEY.append((a + 0.05, "cash_light" if i == 0 else "cash_light_up", -17))
-    card(img, a, a + 0.65 if i == 0 else fb, 960, 540, w=w, h=h, anim="cut", z=61, radius=16, shadow=0.25)
-    click(a, -22)
-zoom(m(s("But I'm going")), 1.22, ease="cut")
-zoom(m(s("because I think")), 1.0, dur=0.4)
+    card(img, a, fb, 900 + 140 * i, 530 + 20 * i, w=w, h=h, anim="pop", z=75 + i, radius=16, shadow=0.6, rot=(-3, 3)[i])
+
+side("R", s("But I'm going"), s("because I think"), [("but I'm going to be", "reg", "But I'm going"),
+                                                     ("DOING THIS ONE", "bold", "doing this one"),
+                                                     ("DIFFERENTLY", "blue", "differently")], **HOOK)
+side("L", s("because I think"), s("My name is"), [("because you've seen", "reg", "because I think"),
+                                                  ("ENOUGH OF THOSE", "bold", "enough of"),
+                                                  ("OTHER VERSIONS", "blue", "other versions")], **HOOK)
 
 # ---- name card (PIP) + money-drop counter ---------------------------------------------------------------
 pa, pb = m(s("My name is")), m(s("$120,000"))
@@ -276,8 +284,8 @@ sfx("whoosh_long", ma, -20, 0.2)
 sfx("money_spray", ma + 0.05, -17)
 click(t_sub1)
 click(t_sub2)
-zoom(m(s("Here's exactly")), 1.0, ease="cut")
-zoom(m(s("how much of that")), 1.2, dur=0.3)
+side("R", s("Here's exactly"), s("So guys"), [("here's exactly", "reg", "Here's exactly"), ("HOW MUCH OF IT", "bold", "how much of that"),
+                                              ("I CAN SHOW YOU", "blue", "I can show")], **HOOK)
 
 # ---- PROOF (his screen recording; no captions, zooms on the numbers) ----------------------------------------
 P = lambda ph_, after=20.0: m(s(ph_, after))
@@ -941,7 +949,7 @@ def main():
         z.pop("side", None)
     add_sfx_pass()
     edit = {"total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL, "sfx": sorted(SFX, key=lambda x: x["t"]),
-            "zoom": sorted(ZOOM, key=lambda x: x["t"]), "music_under_lu": 12.0, "sfx_gain_db": 2.5,
+            "zoom": sorted(ZOOM, key=lambda x: x["t"]), "music_under_lu": 13.5, "sfx_gain_db": 2.5,
             "cuts_raw": [[round(a, 3), round(b, 3)] for a, b in CUTS]}
     json.dump(edit, open(out, "w"), indent=0)
     n_cap = sum(1 for d in EL if d["type"] == "text" and d.get("z") == 84)
