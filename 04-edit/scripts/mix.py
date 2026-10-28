@@ -15,8 +15,9 @@ RAW = "/home/user/work/jean/jeanfxvsl.mov"
 BED = "/home/user/work/jean/bed"
 SONG = "/home/user/work/ref/an/song.wav"
 SCRIPTS = os.path.dirname(os.path.abspath(__file__))
-VOICE_CHAIN = ("highpass=f=75:poles=2,equalizer=f=220:t=q:w=1.1:g=-2,equalizer=f=3200:t=q:w=1.0:g=0.8,"
-               "treble=g=0.5:f=9000,acompressor=threshold=-26dB:ratio=3:attack=6:release=140:knee=4:makeup=5,"
+VOICE_CHAIN = ("highpass=f=80:poles=2,afftdn=nr=6:nf=-48,"                     # light room-noise reduction
+               "equalizer=f=220:t=q:w=1.1:g=-2,equalizer=f=3200:t=q:w=1.0:g=0.8,treble=g=0.5:f=9000,"
+               "acompressor=threshold=-24dB:ratio=2.5:attack=10:release=180:knee=6:makeup=4,"   # gentler than v1-v4 (3:1, 6 ms)
                "deesser=i=0.35,alimiter=limit=0.89:level=false")
 
 

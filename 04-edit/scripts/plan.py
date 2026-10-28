@@ -144,7 +144,7 @@ def text(a, b, lines, z=80):
 
 
 # ---------------------------------------------------------------- AB element recipes
-SIDE_STYLE = {"reg": ("medium", 92, -4), "bold": ("black", 128, -6), "blue": ("black", 128, -6), "num": ("black", 170, -8)}
+SIDE_STYLE = {"reg": ("medium", 92, -4), "bold": ("black", 128, 0), "blue": ("black", 128, 0), "num": ("black", 170, -2)}
 
 
 def side(sd, a, b, spec, dark=True, nocap=True, scale=1.0, cy=520):
