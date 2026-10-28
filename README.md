@@ -10,7 +10,7 @@ AB Trades' VSL, the numbers to check, notes for the edit and open questions for 
 | [`01-vsls/`](01-vsls/) | Jean's current VSL (`current-vsl/`) and example VSLs to learn from (`reference-vsls/`, broken down in [BREAKDOWN.md](01-vsls/reference-vsls/BREAKDOWN.md)) |
 | [`02-results-and-b-roll/`](02-results-and-b-roll/) | Everything else, all in one place: results, testimonials, B-roll, photos, journey pictures, context (mapped in [ASSET-MAP.md](02-results-and-b-roll/ASSET-MAP.md)) |
 | [`03-raw-vsl-footage/`](03-raw-vsl-footage/) | The raw, unedited recording of the VSL that needs editing ([TRANSCRIPT.md](03-raw-vsl-footage/TRANSCRIPT.md), [BREAKDOWN.md](03-raw-vsl-footage/BREAKDOWN.md)) |
-| [`04-edit/`](04-edit/) | The editing setup (nothing to upload here) |
+| [`04-edit/`](04-edit/) | The edit: Jean's VSL rebuilt 1:1 in AB Nasdaq's style ([how it's built](04-edit/README.md)). Nothing to upload here |
 
 ## Uploading
 

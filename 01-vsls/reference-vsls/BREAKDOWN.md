@@ -10,7 +10,9 @@ automatically, and the audio was measured: loudness, where speech is and isn't, 
 how regular the beat is, what fills the gaps between words, and sharp sound-effect-like hits. Example stills
 are in [`frames/`](frames/). Times are approximate (±2 s).
 
-AB's full transcript is in [AB-TRANSCRIPT.md](AB-TRANSCRIPT.md). Jean's script is built on it line by line;
+AB's full transcript is in [AB-TRANSCRIPT.md](AB-TRANSCRIPT.md). **The element-by-element measurements used for
+Jean's edit (every caption, font size, colour, zoom, graphic, sound effect and the song) are in
+[AB-BREAKDOWN.md](AB-BREAKDOWN.md).** Jean's script is built on it line by line;
 the comparison is in [`03-raw-vsl-footage/BREAKDOWN.md`](../../03-raw-vsl-footage/BREAKDOWN.md). Music is described
 by what can be measured (level, whether it has a beat, when it plays); the tracks themselves aren't identified.
 
@@ -25,7 +27,7 @@ by what can be measured (level, whether it has a beat, when it plays); the track
 | Captions | Small subtitles, full sentences, 2 lines | Big captions, 2–4 words at a time, 1 line |
 | Graphics | Black + lime brand cards, mockups, screen demos in frames | White "Apple keynote" text cards, 3D objects, stock and movie clips |
 | Proof | None (it's not selling) | ~2 minutes of raw screen recordings of payouts |
-| Music | Soft bed with no drums under the whole video, never stops | Soft bed under the talking; a track with a steady beat takes over the proof section |
+| Music | Soft bed with no drums under the whole video, never stops | One song, "Me And The Devil" (instrumental), at one constant level from start to finish (details in [AB-BREAKDOWN.md](AB-BREAKDOWN.md)) |
 | Loudness | −12.9 LUFS, very even (loudness range 2.6 LU) | −23.9 LUFS, quiet (loudness range 7.7 LU) |
 
 ## Iman Gadzhi
@@ -145,11 +147,11 @@ by what can be measured (level, whether it has a beat, when it plays); the track
 
 ### Sound
 
-- **A soft bed under the talking.** The gaps between words sit around −43 dBFS and are tonal, with no
-  detectable beat, so it's quieter and more in the background than Iman's.
-- **A track with a steady beat takes over the proof section** (about 1:00–2:10). That's the only stretch with a
-  clear rhythm, and twice he stops talking completely (about 1:00–1:18 and 1:39–2:07) while payouts scroll.
-  It's a breather after a lot of talking, and it lets the numbers speak.
+- **One song the whole way: "Me And The Devil" (instrumental).** Lined up sample by sample against the song, it
+  plays at one constant level, about 15 LU under his voice, and loops back to the start of the groove whenever it
+  reaches about 1:27–1:53 ([AB-BREAKDOWN.md](AB-BREAKDOWN.md)). It's not ducked, so it's most audible in the proof
+  section, where twice he stops talking completely (about 1:00–1:18 and 1:39–2:07) while payouts scroll. That's
+  why that stretch sounded like a different, beat-driven track in the first pass of this breakdown.
 - **Quiet master** (−23.9 LUFS). On players that don't level the volume, this plays much quieter than other
   videos. Don't copy this part.
 - **Sound effects on graphics.** Sharp, bright hits (typical of whooshes and pops) come about every 6 seconds;
@@ -174,7 +176,7 @@ other leaves only the music.
 | | Iman Gadzhi | AB Trades |
 | --- | --- | --- |
 | Starts | On the first frame, thin and airy, then a big low hit with a whoosh right after the hook (3.3 s) | Under the first words |
-| Pulse | ~102 BPM, a crisp shaker/hat tick on every 16th, panned wide | No steady beat under the talking; a beat-driven track only under the proof section |
+| Pulse | ~102 BPM, a crisp shaker/hat tick on every 16th, panned wide | The song's own beat (89 BPM hi-hats and 808) all the way through, quiet under the talking |
 | Strings | Chord change every ~1.1 s over a bass walking down A-G-F-E; violins re-bowing on every 16th; an E pedal ticking in eighths | A held two-note chord changing every ~2 s, with freer broken chords on top (~3 notes a second) |
 | Texture change | Every ~9 s (median 6 s) | Every ~10 s (median 6 s) |
 | Level under the voice | 12–15 dB | ~17 dB |
@@ -218,8 +220,9 @@ inclusions, same guarantee and close. So the edit should follow AB's edit, with 
   in a row for "over and over and over again".
 - **Split screen for "what's included"**, each line appearing as he says it, then the guarantee with a payout
   certificate and "FOR FREE" in the accent colour.
-- **Music**: a soft bed with no beat under all the talking, a beat-driven track under the proof section, never
-  silent. Final mix at −14 LUFS with peaks under −1 dB (AB's −23.9 LUFS master is too quiet to copy).
+- **Music**: the same song AB uses, with the boom (808 sub-bass and kick) taken out, at his constant level 15 LU
+  under the voice and looped the way he loops it. Final mix at −14 LUFS with peaks under −1 dB (AB's −23.9 LUFS master
+  is too quiet to copy).
 - **Sound effects**: a whoosh on each graphic, a pop when a number lands, a cash-register sound on the biggest
   payouts. Sparingly.
 
