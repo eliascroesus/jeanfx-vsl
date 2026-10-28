@@ -233,6 +233,29 @@ def gen_post(out, gen="/home/user/work/gen"):
         im.save(f"{gen}/trophy_cut.png")
 
 
+def review_bubble(out):
+    """The chat bubble that pops up next to the marked chart: the mistake and the fix, caught the same day."""
+    W_, H_ = 640, 250
+    im = Image.new("RGBA", (W_ + 60, H_ + 60), (0, 0, 0, 0))
+    sh = Image.new("L", im.size, 0)
+    ImageDraw.Draw(sh).rounded_rectangle((30, 40, 30 + W_, 40 + H_), 36, fill=90)
+    im.putalpha(sh.filter(ImageFilter.GaussianBlur(16)))
+    card = Image.new("RGBA", (W_, H_), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle((0, 0, W_ - 1, H_ - 1), 36, fill=(255, 255, 255, 255), outline=(225, 225, 230, 255), width=2)
+    d.ellipse((34, 40, 84, 90), fill=(242, 54, 69))
+    d.line([(48, 54), (70, 76)], fill=(255, 255, 255), width=6)
+    d.line([(70, 54), (48, 76)], fill=(255, 255, 255), width=6)
+    d.text((108, 40), "Entered before the sweep", font=font("InterDisplay-SemiBold.otf", 40), fill=(20, 20, 24))
+    d.ellipse((34, 150, 84, 200), fill=(8, 153, 129))
+    d.line([(46, 176), (56, 188)], fill=(255, 255, 255), width=6)
+    d.line([(56, 188), (74, 162)], fill=(255, 255, 255), width=6)
+    d.text((108, 150), "Wait for the CHoCH", font=font("InterDisplay-SemiBold.otf", 40), fill=(20, 20, 24))
+    d.text((108, 104), "caught today, not 3 days later", font=font("InterDisplay-Medium.otf", 28), fill=(120, 120, 128))
+    im.alpha_composite(card, (30, 30))
+    im.save(f"{out}/review_bubble.png")
+
+
 def rule(out):
     im = Image.new("RGBA", (460, 4), (255, 255, 255, 140))
     im.save(f"{out}/rule.png")
@@ -241,6 +264,7 @@ def rule(out):
 def main():
     out = sys.argv[1]
     rule(out)
+    review_bubble(out)
     gen_post(out)
     os.makedirs(out, exist_ok=True)
     crops(out)

@@ -80,6 +80,54 @@ def make_sfx():
         m = int(0.03 * SR)
         x[s:s + m] += bp(r.standard_normal(m), 900, 6000) * env(m, 0.002, 0.008)[: len(x[s:s + m])]
     out["flutter"] = norm(stereo(x, 0.7), 0.6)
+    for k in range(3):                                      # mouse click: press, then a softer release
+        n = int(0.12 * SR)
+        t = np.arange(n) / SR
+        x = np.zeros(n)
+        for at, amp, f in [(0.0, 1.0, 2100 + 150 * k), (0.058 + 0.006 * k, 0.55, 2600 + 150 * k)]:
+            s0 = int(at * SR)
+            m = int(0.012 * SR)
+            tt = np.arange(m) / SR
+            burst = bp(r.standard_normal(m), 1500, 9000) * np.exp(-tt / 0.0016)
+            body = np.sin(2 * np.pi * f * tt) * np.exp(-tt / 0.004) * 0.6
+            thock = np.sin(2 * np.pi * 380 * tt) * np.exp(-tt / 0.006) * 0.35
+            x[s0:s0 + m] += (burst / (np.abs(burst).max() + 1e-9) + body + thock) * amp
+        out[f"mclick{k}"] = norm(stereo(x, 0.3), 0.85)
+    n = int(0.12 * SR)                                      # pop: a counter lands
+    t = np.arange(n) / SR
+    f = 900 * np.exp(-t / 0.02) + 260
+    out["pop"] = norm(stereo(np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.035)), 0.8)
+    for name, dur in [("roll08", 0.8), ("roll10", 1.0), ("roll14", 1.4)]:  # counter ticks, slowing like the number
+        n = int((dur + 0.1) * SR)
+        x = np.zeros(n)
+        N = 18
+        for i in range(N):
+            u = i / N
+            at = dur * (1 - (1 - u) ** (1 / 2.2))
+            s0 = int(at * SR)
+            m = int(0.006 * SR)
+            tt = np.arange(m) / SR
+            x[s0:s0 + m] += bp(r.standard_normal(m), 3500, 11000) * np.exp(-tt / 0.0012) * (1 - 0.4 * u)
+        out[name] = norm(stereo(x, 0.4), 0.6)
+    for k in range(4):                                      # keyboard tap
+        n = int(0.05 * SR)
+        t = np.arange(n) / SR
+        x = bp(r.standard_normal(n), 800 + 200 * k, 6000) * np.exp(-t / 0.006) + np.sin(2 * np.pi * (240 + 30 * k) * t) * np.exp(-t / 0.01) * 0.5
+        out[f"key{k}"] = norm(stereo(x, 0.4), 0.7)
+    n = int(0.9 * SR)                                       # notification: two bell tones
+    t = np.arange(n) / SR
+    bell = lambda f0, a: (np.sin(2 * np.pi * f0 * t) + 0.35 * np.sin(2 * np.pi * f0 * 2.76 * t)) * np.exp(-t / 0.22) * a
+    x = bell(1318.5, 1.0)
+    x[int(0.13 * SR):] += bell(1760, 0.9)[: n - int(0.13 * SR)]
+    out["notif"] = norm(stereo(x), 0.75)
+    n = int(0.24 * SR)                                      # swish: a short soft whoosh
+    t = np.arange(n) / SR
+    y = bp(r.standard_normal(n), 900, 7000) * np.sin(np.pi * t / t[-1]) ** 2
+    out["swish"] = norm(np.stack([y * np.linspace(0.7, 1, n), y * np.linspace(1, 0.7, n)], 1), 0.6)
+    n = int(0.42 * SR)                                      # marker drawing a circle
+    t = np.arange(n) / SR
+    y = bp(r.standard_normal(n), 1800, 7500) * (0.6 + 0.4 * np.sin(2 * np.pi * 9 * t)) * np.sin(np.pi * t / t[-1]) ** 0.6
+    out["marker"] = norm(stereo(y, 0.2), 0.6)
     n = int(1.0 * SR)                                       # low impact
     t = np.arange(n) / SR
     f = 70 * np.exp(-t / 0.35) + 38

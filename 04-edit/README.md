@@ -17,9 +17,11 @@ uploading; it's the editing setup.
 | `scripts/mix.py` | Voice clean-up, the song bed 15 LU under the voice (AB's level, constant), sound effects, mastered to −14 LUFS |
 | `scripts/song_bed.py` | "Me And The Devil" (instrumental) with the boom removed, looped the way AB loops it |
 | `scripts/assets.py` | Certificate crops from the Discord screenshots in `02-results-and-b-roll/`, the blurred chart, signal card, phone mockup, "account breached" email, 3D objects |
-| `scripts/gen_stills.py` | Photoreal stills for AB's stock-footage moments (money, burning bill, trader at screens, brain…), generated on the CPU with LCM Dreamshaper v7 (MIT licence) |
+| `scripts/motion.py` | Motion graphics in place of AB's stock footage: moving light gradients, rising dollar signs, embers, city-light bokeh, self-drawing glowing charts, a neural-network brain, an earnings card, a time card, a marker circle |
+| `scripts/proof_clicks.py` | Finds every page switch in Jean's screen recording so each gets a mouse click |
+| `scripts/gen_stills.py` | Only used for the $100-bill texture in the money drop (LCM Dreamshaper v7, MIT licence) |
 
-To rebuild: `assets.py` → `gen_stills.py` → `plan.py` → `render.py`. The song file isn't in this repo (it's
+To rebuild: `assets.py` → `gen_stills.py bill_front bill_back` → `proof_clicks.py` → `plan.py` → `render.py`. The song file isn't in this repo (it's
 copyrighted and this repo may be public); using it in a paid ad needs a licence.
 
 ## What's copied 1:1 from AB
@@ -40,8 +42,11 @@ copyrighted and this repo may be public); using it in a paid ad needs a licence.
   caps ("WORK WITH YOU", "FOR FREE", "THE APPLICATION").
 - **Music**: the same song, boom removed, at AB's level (15 LU under the voice, never ducked), starting where he starts
   it (0:05.6 into the song) and jumping back the way he does when it reaches ~1:27–1:53.
-- **Sound effects**: a crisp click on every text element, whooshes on switches, a coin swish, a money flutter, a low
-  impact before "I put $4,000 in a live account".
+- **Sound effects**: a crisp tick on every text element, whooshes on switches, a coin swish, a money flutter, a low
+  impact before "I put $4,000 in a live account". On top of AB's (v2): a mouse click on every image that pops up and
+  on every page switch in the proof screen recording, ticks while counters run and a pop when they land, typing under
+  the typed offer list, a soft swish on punch-ins and side text, a notification ding on the "account breached" email,
+  a marker sound on the chart circle, and a whoosh on every scene change.
 
 ## Cuts
 
@@ -55,8 +60,13 @@ All of them are in `CUTS` at the top of `scripts/plan.py` and can be put back.
 
 ## Where it differs from AB, and why
 
-- AB's stock clips, movie clips and 3D objects are licensed footage that can't be copied, so those moments use
-  generated stills with the same slow push and whip, a 3D-object set (Microsoft Fluent, MIT) and drawn charts.
+- AB's stock clips and movie clips are licensed footage that can't be copied. Those moments are motion graphics
+  instead (v2; the first cut used AI-generated stills, which looked fake): a green gradient with rising dollar signs
+  behind "$76,000" and "the money would roll in", a glowing chart drawing itself for "you don't know what you're doing"
+  and "go learn one", framed red and green charts for "Fear" and "Greed", a neural-network brain, a weekly-earnings card
+  for DoorDash, embers behind "$4,000", city-light bokeh for the night in the car, a time card for the warehouse job,
+  and Jean's own chart with a red circle and a review note for "someone to review what you did". AB's 3D objects use
+  Microsoft Fluent 3D (MIT).
 - Jean-only parts of the script (his DoorDash story, the two problems, the inducement setup, his students) use AB's
   elements in the same way: animated charts for the setup, black student cards with his certificates, the Discord wall.
 - AB's master is very quiet (−24 LUFS); this one is mastered to −14 LUFS for YouTube and ads.

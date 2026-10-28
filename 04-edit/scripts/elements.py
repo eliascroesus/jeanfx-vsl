@@ -667,4 +667,7 @@ TYPES = {"plate": Plate, "grad": Grad, "card": Card, "text": Text, "counter": Co
 
 
 def build(d):
+    if d["type"] not in TYPES:
+        import motion
+        TYPES.update(motion.TYPES)
     return TYPES[d["type"]](d)

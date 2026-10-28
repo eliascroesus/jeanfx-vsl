@@ -117,6 +117,12 @@ def click(t, db=-22):
     sfx(f"click{_ck[0] % 4}", t, db + ((_ck[0] * 7) % 5 - 2) * 0.6)
 
 
+def mclick(t, db=-15):
+    """A mouse click (press + release) on every image that pops up."""
+    _ck[0] += 1
+    sfx(f"mclick{_ck[0] % 3}", t, db + ((_ck[0] * 5) % 3 - 1) * 0.7, 0.01)
+
+
 def plate(a, b, rgb, z=10, **kw):
     add(type="plate", t0=a, t1=b, rgb=list(rgb), z=z, **kw)
     NOCAP.append((a, b))
@@ -147,6 +153,7 @@ def side(sd, a, b, spec, dark=True, nocap=True):
     SIDES.append((A, B))
     zoom(A, 1.0, ease="cut", drift=0.002, side=True)            # AB puts side text on the wide shot
     add(type="grad", t0=A, t1=B, kind=("left" if sd == "L" else "right") + ("" if dark else "_white"), fade=0.18, z=20)
+    sfx("swish", A, -27, 0.08)
     if nocap:
         NOCAP.append((A, B))
     import fx
@@ -196,8 +203,10 @@ def keynote(a, b, rows, rgb=PLATE_WHITE, size=112, dark_text=True, sound=True):
         sfx("whoosh", A, -26, 0.15)
 
 
-def card(img, a, b, cx, cy, w=0, h=0, anim="pop", z=60, **kw):
+def card(img, a, b, cx, cy, w=0, h=0, anim="pop", z=60, sound=True, **kw):
     add(type="card", img=img, t0=a, t1=b, cx=cx, cy=cy, w=w, h=h, anim=anim, z=z, **kw)
+    if sound:
+        mclick(a + (kw.get("dur", 0.4) * 0.6 if anim == "fly" else 0.0))
 
 
 def zoom(t, z, cx=960, cy=470, dur=0.35, ease="out", drift=0.004, side=False):
@@ -308,7 +317,8 @@ click(m(s("that I can't currently")))
 zoom(bb, 1.0, ease="cut")
 zoom(m(s("Instead of asking")), 1.22, dur=0.3)
 ra, rb = m(s("I would rather")), m(s("and tell you straight up"))
-add(type="still", t0=ra, t1=rb, img="money_fan_g", push=0.10, pan=[0.6, -0.2], whip=True, darken=0.15, z=15)
+add(type="aurora", t0=ra, t1=rb, palette="green", seed=2, z=14)
+add(type="particles", t0=ra, t1=rb, kind="dollar", n=42, seed=4, z=16)
 NOCAP.append((ra, rb))
 CENTER.append((ra, rb))
 sfx("whoosh", ra, -22, 0.15)
@@ -325,13 +335,15 @@ zoom(m(s("because I'm so tired")), 1.22, dur=0.3)
 # ---- the problem -----------------------------------------------------------------------------------------------
 zoom(m(s("So here's the thing")), 1.0, ease="cut")
 wa, wb = m(s("that you're not watching")), m(s("You probably already"))
-add(type="still", t0=wa, t1=wb, img="trader_screens", push=0.08, darken=0.25, z=15)
+add(type="aurora", t0=wa, t1=wb, palette="blue", seed=3, grid=1, z=14)
+add(type="linechart", t0=wa, t1=wb, trend="volatile", rgb=[70, 160, 255], draw=1.8, seed=8, z=16)
 NOCAP.append((wa, wb)); CENTER.append((wa, wb))
 sfx("whoosh", wa, -24, 0.12)
 zoom(wb, 1.2, ease="cut")
 zoom(m(s("and I know for a fact")), 1.0, dur=0.35)
 ab_, bb_ = m(s("your bank account does not")), m(s("And that's the part"))
-add(type="still", t0=ab_, t1=bb_, img="money_fan_g", push=0.05, darken=0.55, blur=9, z=15)
+add(type="aurora", t0=ab_, t1=bb_, palette="green", seed=5, intensity=0.7, z=14)
+add(type="particles", t0=ab_, t1=bb_, kind="dollar", n=30, seed=6, alpha=0.6, z=16)
 NOCAP.append((ab_, bb_))
 add(type="pill", t0=ab_, t1=bb_, box=[500, 360, 1420, 650], radius=80, z=79)
 text(ab_, bb_, [line("Available Balance", "medium", 84, WHITE, 960, 300, ab_, align="center", track=-4, reveal="cut")])
@@ -341,8 +353,10 @@ sfx("whoosh", ab_, -22, 0.12)
 zoom(bb_, 1.22, ease="cut")
 zoom(m(s("Because it was just")), 1.0, dur=0.35)
 la, lb = m(s("You will just go")), m(s("and the money will"))
-add(type="still", t0=la, t1=lb, img="chalkboard", push=0.08, darken=0.2, whip=True, z=15)
-add(type="still", t0=lb, t1=m(s("So what's actually")), img="cash_counter_g", push=0.08, darken=0.15, whip=True, z=15)
+add(type="aurora", t0=la, t1=lb, palette="blue", seed=7, grid=1, z=14)
+add(type="linechart", t0=la, t1=lb, trend="up", rgb=[40, 220, 120], draw=1.1, seed=12, z=16)
+add(type="aurora", t0=lb, t1=m(s("So what's actually")), palette="green", seed=9, z=14)
+add(type="particles", t0=lb, t1=m(s("So what's actually")), kind="dollar", n=60, seed=10, z=16)
 for a_, b_ in [(la, lb), (lb, m(s("So what's actually")))]:
     NOCAP.append((a_, b_)); CENTER.append((a_, b_))
 sfx("whoosh", la, -24, 0.12)
@@ -371,9 +385,9 @@ fa_, fb_ = m(s("Fear, greed")), m(s("And this is not a flaw"))
 plate(fa_, fb_, (0, 0, 0))
 t_greed = m(s("greed"))
 t_need = m(s("and the need"))
-card("night_car", fa_, t_greed, 960, 540, w=760, anim="cut", border=4, radius=4, z=60)
+add(type="linechart", t0=fa_, t1=t_greed, trend="down", rgb=[242, 54, 69], rect=[580, 330, 1340, 750], draw=0.5, seed=21, z=60)
 text(fa_, t_greed, [line("Fear", "semibold", 120, WHITE, 960, 585, fa_, align="center", track=-5, reveal="cut", shadow=(0.6, 6))])
-card("money_fan_g", t_greed, t_need, 960, 540, w=760, anim="cut", border=4, radius=4, z=60)
+add(type="linechart", t0=t_greed, t1=t_need, trend="up", rgb=[40, 220, 120], rect=[580, 330, 1340, 750], draw=0.5, seed=22, z=60)
 text(t_greed, t_need, [line("Greed", "semibold", 120, WHITE, 960, 585, t_greed, align="center", track=-5, reveal="cut", shadow=(0.6, 6))])
 text(t_need, fb_, [line("and the need", "medium", 100, WHITE, 960, 470, t_need, align="center", track=-4),
                    line("to be right", "medium", 100, WHITE, 960, 580, m(s("to be right")), align="center", track=-4),
@@ -383,7 +397,7 @@ for tt in (fa_, t_greed, t_need, m(s("immediately"))):
 zoom(fb_, 1.22, ease="cut")
 ga, gb = m(s("how our brain")), m(s("And this is the exact"))
 plate(ga, gb, (0, 0, 0))
-card("brain", ga, gb, 1380, 540, w=760, anim="fade", drift=0.06, z=60)
+add(type="neural", t0=ga, t1=gb, cx=1380, cy=540, size=720, z=60)
 text(ga, gb, [line("how our brain is", "medium", 84, WHITE, 540, 500, ga, align="center", track=-4),
               line("designed to think", "bold", 112, WHITE, 540, 620, m(s("designed to think")), align="center", track=-6)])
 click(ga)
@@ -405,7 +419,8 @@ zoom(m(s("I had to find out")), 1.22, dur=0.3)
 keynote(s("I came to the United States"), s("After school"), [("I came to the U.S.", "I came to"), ("at 18 years old", "when I was 18")])
 da, db_ = m(s("After school")), m(s("Guess what", 200))
 plate(da, db_, (0, 0, 0))
-card("delivery", da, db_, 1390, 540, w=640, anim="fade", border=6, radius=4, bw=True, z=60)
+add(type="earnings", t0=da, t1=db_, cx=1390, cy=540, total=500, z=60)
+mclick(da)
 text(da, db_, [line("DoorDashing", "medium", 84, WHITE, 600, 430, da, align="center", track=-4),
                line("till midnight", "medium", 84, WHITE, 600, 530, m(s("to midnight")), align="center", track=-4),
                line("$500/week", "bold", 140, WHITE, 600, 690, m(s("making $500")), align="center", track=-7)])
@@ -428,10 +443,11 @@ sfx("impact", oa, -14, 0.0)
 keynote(s("And then one moment"), s("I put over"), [("And then", "And then"), ("one moment", "one moment")], sound=False)
 ia, ib = m(s("I put over")), m(s("I knew I don't"))
 plate(ia, ib, (0, 0, 0))
-add(type="fire", t0=ia, t1=ib, cx=560, cy=540, h=900, z=60)
-text(ia, ib, [line("I put", "medium", 92, WHITE, 1340, 410, ia, align="center", track=-4),
-              line("$4,000", "bold", 200, WHITE, 1340, 600, m(s("$4,000", 214)), align="center", track=-9),
-              line("in a live account", "medium", 92, WHITE, 1340, 720, m(s("in a live")), align="center", track=-4)])
+add(type="aurora", t0=ia, t1=ib, palette="ember", seed=11, intensity=0.45, z=14)
+add(type="particles", t0=ia, t1=ib, kind="ember", n=80, seed=12, z=16)
+text(ia, ib, [line("I put", "medium", 92, WHITE, 960, 400, ia, align="center", track=-4),
+              line("$4,000", "bold", 220, WHITE, 960, 610, m(s("$4,000", 214)), align="center", track=-9),
+              line("in a live account", "medium", 92, WHITE, 960, 730, m(s("in a live")), align="center", track=-4)])
 for tt in (ia, m(s("$4,000", 214)), m(s("in a live"))):
     click(tt)
 zoom(ib, 1.22, ease="cut")
@@ -445,7 +461,8 @@ sfx("whoosh", la2, -24, 0.1)
 zoom(lb2, 1.0, ease="cut")
 side("L", s("Quit and go"), s("And then I remember"), [("quit and go", "reg", "Quit and go"), ("TO COLLEGE", "blue", "to college")])
 ca2, cb2 = m(s("I sat in my car")), m(s("One thing I learned"))
-add(type="still", t0=ca2, t1=cb2, img="night_car", push=0.08, darken=0.2, whip=True, z=15)
+add(type="aurora", t0=ca2, t1=cb2, palette="night", seed=13, z=14)
+add(type="particles", t0=ca2, t1=cb2, kind="bokeh", n=36, seed=14, z=16)
 NOCAP.append((ca2, cb2)); CENTER.append((ca2, cb2))
 sfx("whoosh", ca2, -24, 0.12)
 zoom(cb2, 1.22, ease="cut")
@@ -462,7 +479,8 @@ sfx("whoosh", c1a, -24, 0.12)
 click(m(s("mark out your level"))); click(m(s("you enter your trade"))); sfx("whoosh", m(s("stopped by")), -26, 0.05)
 zoom(c1b, 1.0, ease="cut")
 na = m(s("the email lands"))
-card("breached", na, m(s("And guess what", 250)), 960, 190, w=1100, anim="fly", **{"from": [0, -420], "dur": 0.4}, out="fade", z=88)
+card("breached", na, m(s("And guess what", 250)), 960, 190, w=1100, anim="fly", **{"from": [0, -420], "dur": 0.4}, out="fade", z=88, sound=False)
+sfx("notif", na + 0.15, -14)
 sfx("whoosh", na, -22, 0.1)
 zoom(m(s("And guess what", 250)), 1.22, ease="cut")
 side("L", s("What I realized"), s("You learned the same"), [("this is not a", "reg", "this is not a"), ("KNOWLEDGE", "bold", "knowledge"),
@@ -536,10 +554,11 @@ click(ka); click(m(s("Kibron")))
 sfx("whoosh", ka, -24, 0.12)
 wa2, wb2 = m(s("He was literally")), m(s("And I showed him"))
 plate(wa2, wb2, (0, 0, 0))
-card("warehouse", wa2, wb2, 1390, 540, w=640, anim="fade", border=6, radius=4, bw=True, z=60)
-text(wa2, wb2, [line("working 9 to 5", "medium", 84, WHITE, 600, 430, wa2, align="center", track=-4),
-                line("WAREHOUSE JOBS", "black", 112, WHITE, 600, 570, m(s("warehouse jobs")), align="center", track=-5),
-                line("for 2–3 years", "medium", 84, WHITE, 600, 680, m(s("for over two")), align="center", track=-4)])
+add(type="timecard", t0=wa2, t1=wb2, cx=1390, cy=540, z=60)
+mclick(wa2)
+text(wa2, wb2, [line("working 9 to 5", "medium", 84, WHITE, 560, 440, wa2, align="center", track=-4),
+                line("WAREHOUSE JOBS", "black", 92, WHITE, 560, 565, m(s("warehouse jobs")), align="center", track=-4),
+                line("for 2–3 years", "medium", 84, WHITE, 560, 670, m(s("for over two")), align="center", track=-4)])
 for tt in (wa2, m(s("warehouse jobs")), m(s("for over two"))):
     click(tt)
 xa, xb = m(s("where he managed")), m(s("And this keeps going"))
@@ -589,8 +608,11 @@ zoom(m(s("trying to figure out", 405)), 1.22, dur=0.3)
 zoom(m(s("I'm willing to help you master")), 1.0, ease="cut")
 sa, sb = m(s("having somebody by your side")), m(s("to make sure that a mistake"))
 plate(sa, sb, PLATE_WHITE)
-card("trader_screens", sa, sb, 560, 540, w=760, anim="fade", border=0, radius=6, shadow=0.3, z=60)
+card("phone_us30_chart", sa, sb, 560, 540, h=880, anim="pop", z=60)
 t_rev = m(s("to review what you did"))
+add(type="annot", t0=t_rev + 0.1, t1=sb, x=615, y=720, r=80, z=70)
+sfx("marker", t_rev + 0.1, -20)
+card("review_bubble", m(s("every single day", 424)), sb, 1290, 870, anim="pop", z=72)
 text(sa, t_rev, [line("having someone", "bold", 96, BLACK, 1000, 500, sa, track=-5),
                  line("by your side", "medium", 96, BLACK, 1000, 610, m(s("by your side")), track=-4)])
 text(t_rev, sb, [line("to review", "bold", 96, BLACK, 1000, 440, t_rev, track=-5),
@@ -847,6 +869,42 @@ if TOTAL - t_ > 0.3:
     add(type="grad", t0=t_, t1=TOTAL, kind="bottom", fade=0, z=19)
 
 
+def add_sfx_pass():
+    """Extra sound design on top of AB's: a whoosh on every scene change, ticks while counters run and a pop when they
+    land, typing under the typed offer list, a soft swish on punch-ins. Then de-duplicate."""
+    def near(names, t, win):
+        return any(x["name"].startswith(names) and abs(x["t"] - t) < win for x in SFX)
+    for d in EL:
+        if d["type"] in ("plate", "aurora", "pip", "split", "wall", "chart") and not near(("whoosh",), d["t0"], 0.3):
+            sfx("whoosh", d["t0"], -25, 0.12)
+        if d["type"] == "counter":
+            dur = d.get("dur", 1.1)
+            name = "roll08" if dur < 0.9 else "roll10" if dur < 1.2 else "roll14"
+            sfx(name, d.get("t_count", d["t0"]), -24)
+            sfx("pop", d.get("t_count", d["t0"]) + dur * 0.92, -19)
+        if d["type"] == "text":
+            for L in d["lines"]:
+                if L.get("reveal") == "type":
+                    n = len(L["text"]) / max(L.get("cps", 28), 1)
+                    k, t = 0, L["t_in"]
+                    while t < L["t_in"] + n:
+                        sfx(f"key{k % 4}", t, -31 + (k * 7 % 3) * 0.8)
+                        k += 1
+                        t += 0.075 + (k * 13 % 5) * 0.006
+    import os
+    pc = os.path.join(os.path.dirname(T), "proof_clicks.json")    # his screen recording jumping to a new page
+    if os.path.exists(pc):
+        for t in json.load(open(pc)):
+            if PROOF[0] <= t < PROOF[1]:
+                mclick(t, -17)
+    for z in ZOOM:
+        if z.get("ease") == "out" and z["z"] > 1.1:
+            sfx("swish", z["t"], -31, 0.05)
+    # no plain tick on top of a mouse click
+    mc = [x["t"] for x in SFX if x["name"].startswith("mclick")]
+    SFX[:] = [x for x in SFX if not (x["name"].startswith("click") and any(abs(x["t"] - t) < 0.06 for t in mc))]
+
+
 def main():
     out = sys.argv[1]
     # no punch-ins while side text is up (the forced wide framing at its start stays)
@@ -854,6 +912,7 @@ def main():
     ZOOM = [z for z in ZOOM if z["side"] or not any(a < z["t"] < b - 0.05 for a, b in SIDES)]
     for z in ZOOM:
         z.pop("side", None)
+    add_sfx_pass()
     edit = {"total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL, "sfx": sorted(SFX, key=lambda x: x["t"]),
             "zoom": sorted(ZOOM, key=lambda x: x["t"]), "music_under_lu": 15.0,
             "cuts_raw": [[round(a, 3), round(b, 3)] for a, b in CUTS]}
