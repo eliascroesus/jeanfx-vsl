@@ -4858,10 +4858,10 @@
 {
 "type": "text",
 "t0": 116.90666666666668,
-"t1": 118.7666666666667,
+"t1": 117.30666666666669,
 "lines": [
 {
-"text": "you the $76,000 in",
+"text": "you the",
 "kind": "medium",
 "size": 112,
 "rgb": [
@@ -4872,34 +4872,6 @@
 "x": 960,
 "y": 580,
 "t_in": 116.90666666666668,
-"align": "center",
-"track": -5,
-"reveal": "cut",
-"shadow": [
-0.6,
-6
-]
-}
-],
-"z": 84
-},
-{
-"type": "text",
-"t0": 118.7666666666667,
-"t1": 119.70666666666669,
-"lines": [
-{
-"text": "verified prop firm payouts",
-"kind": "medium",
-"size": 112,
-"rgb": [
-255,
-255,
-255
-],
-"x": 960,
-"y": 580,
-"t_in": 118.7666666666667,
 "align": "center",
 "track": -5,
 "reveal": "cut",
@@ -4930,7 +4902,7 @@
 "t_in": 119.70666666666669,
 "align": "center",
 "track": -5,
-"reveal": "cut",
+"reveal": "blur",
 "shadow": [
 0.6,
 6
@@ -5950,7 +5922,7 @@
 {
 "type": "text",
 "t0": 148.2066666666667,
-"t1": 148.7666666666667,
+"t1": 149.16666666666669,
 "lines": [
 {
 "text": "learn one and the",
@@ -5978,7 +5950,7 @@
 {
 "type": "text",
 "t0": 149.16666666666669,
-"t1": 150.10666666666668,
+"t1": 150.33666666666667,
 "lines": [
 {
 "text": "money would roll in",
@@ -5994,7 +5966,7 @@
 "t_in": 149.16666666666669,
 "align": "center",
 "track": -5,
-"reveal": "blur",
+"reveal": "cut",
 "shadow": [
 0.6,
 6
@@ -8134,7 +8106,7 @@
 {
 "type": "text",
 "t0": 257.03999999999996,
-"t1": 258.24,
+"t1": 258.39,
 "lines": [
 {
 "text": "the stop losses first",
@@ -9514,7 +9486,7 @@
 {
 "type": "text",
 "t0": 319.3333333333332,
-"t1": 320.64,
+"t1": 320.8433333333333,
 "lines": [
 {
 "text": "else's stop loss",

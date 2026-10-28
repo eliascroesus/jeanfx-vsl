@@ -95,6 +95,7 @@ EL, SFX, ZOOM = [], [], []
 NOCAP = []        # windows without bottom captions
 CENTER = []       # windows where captions go to the middle (over B-roll)
 DARKCAP = []      # windows where captions are black (over a white chart plate)
+HIDEALL = []      # windows with no captions at all, even over B-roll
 PROOF = (m(s("So guys")), m(s("So I was able")))
 NOCAP.append(PROOF)
 
@@ -312,6 +313,7 @@ NOCAP.append((ra, rb))
 CENTER.append((ra, rb))
 sfx("whoosh", ra, -22, 0.15)
 t76 = m(s("$76,000", 125))
+HIDEALL.append((t76, m(s("that I just showed"))))         # the counter replaces the caption, like AB's "$500,000"
 add(type="counter", t0=t76, t1=m(s("that I just showed")), t_count=t76, dur=0.8, v0=999, v1=76000, x=960, y=610, size=230,
     kind="semibold", rgb=list(WHITE), track=-10, shadow=[0.6, 6], z=82)
 click(t76)
@@ -786,7 +788,7 @@ seq = [w for w in caps_words if not raw_in_cut(w["s"]) and w["w"]]
 for i, wd in enumerate(seq):
     o = m(wd["s"])
     mode = "center" if in_win(o, CENTER) else "dark" if in_win(o, DARKCAP) else "bottom"
-    if hidden(o) and mode == "bottom":
+    if (hidden(o) and mode == "bottom") or in_win(o, HIDEALL):
         if cur:
             groups.append(cur)
             cur = []
@@ -816,8 +818,8 @@ for gi, g in enumerate(groups):
     nxt_a = groups[gi + 1][0]["o"] if gi + 1 < len(groups) else a + 3
     b = min(nxt_a, m(g[-1]["e"]) + 0.35)
     # stop at the next graphic
-    for c0, c1 in NOCAP:
-        if a < c0 < b:
+    for c0, c1 in NOCAP + HIDEALL:
+        if a < c0 < b and (mode == "bottom" or (c0, c1) in HIDEALL):
             b = c0
     if b - a < 0.08:
         continue
