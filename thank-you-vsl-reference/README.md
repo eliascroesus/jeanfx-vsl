@@ -1,5 +1,9 @@
 # Thank-you VSL reference
 
+The uploaded reference is AB Trades' thank-you video (`abnasdaq-thankyou.mp4`). Every element of it is broken down
+in [BREAKDOWN.md](BREAKDOWN.md) (structure, captions, text cards, icons, light leaks, zooms, music, sound effects), with
+stills in [`frames/`](frames/) and the transcript in [TRANSCRIPT.md](TRANSCRIPT.md).
+
 The thank-you video to copy 1:1 for Jean (the video people see after they sign up or book).
 
 - **The video itself:** it'll almost always be over 25 MB, so upload it to the
