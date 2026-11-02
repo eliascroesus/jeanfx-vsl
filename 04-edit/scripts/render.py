@@ -32,7 +32,8 @@ def make_base(edit, path):
     if os.path.exists(path):
         return
     expr = "+".join(f"between(n,{a},{b - 1})" for a, b in edit["keep_frames"])
-    run(["ffmpeg", "-y", "-v", "error", "-i", RAW, "-vf", f"select='{expr}',setpts=N/{FPS}/TB,format=yuv420p", "-an",
+    pre = "fps=30," if edit.get("raw_fps_fix") else ""     # thank-you raw is 23.976 fps: put it on a 30 fps grid first
+    run(["ffmpeg", "-y", "-v", "error", "-i", edit.get("raw", RAW), "-vf", f"{pre}select='{expr}',setpts=N/{FPS}/TB,format=yuv420p", "-an",
          "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "12", "-g", "15", path + ".tmp.mp4"])
     os.replace(path + ".tmp.mp4", path)
 

@@ -228,6 +228,21 @@ def make_sfx():
     boom = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.35)
     thump = bp(r.standard_normal(n), 60, 900) * np.exp(-t / 0.05)
     out["impact"] = norm(stereo(boom + thump * 0.4), 0.9)
+    # shimmer (thank-you video): AB's bright, airy shimmer on every light leak. All of it above 2 kHz (strongest at
+    # 9-18 kHz), ~0.6 s from the flash, no low end: a sleigh-bell shake (VSCO 2 CE, CC0) high-passed, over an airy
+    # noise sweep
+    n = int(0.75 * SR)
+    t = np.arange(n) / SR
+    bells = sample("Miscellania Raw/Misc 2/sleighbell2_shake1.wav")
+    k = int(np.argmax(np.convolve(bells ** 2, np.ones(int(0.2 * SR)), "valid")))
+    bells = bells[k:k + n]
+    bells = signal.sosfiltfilt(signal.butter(4, 4500, "high", fs=SR, output="sos"), bells) * np.minimum(1, t / 0.03) * np.exp(-t / 0.28)
+    air = bp(r.standard_normal(n), 6000, 18000) * np.minimum(1, t / 0.06) * np.exp(-t / 0.22)
+    sweep = np.zeros(n)
+    for f0 in (7040, 9400, 12540):                          # a faint high glint
+        sweep += np.sin(2 * np.pi * f0 * t * (1 + 0.04 * t)) * np.exp(-t / 0.18) * 0.12
+    y = norm(bells, 1.0) * 0.8 + norm(air, 1.0) * 0.45 + sweep
+    out["shimmer"] = norm(np.stack([y, np.roll(y, int(0.0009 * SR)) * 0.92], 1), 0.7)
     return out
 
 
@@ -257,7 +272,7 @@ def mix(edit, out_path):
     total = edit["total"]
     n = int(round(total * SR))
     # voice: same cuts as the picture (frame boundaries), 6 ms fades at each join
-    src = load_audio(RAW)
+    src = load_audio(edit.get("raw", RAW))
     voice = np.zeros((n + SR, 2))
     pos = 0
     fade = int(0.006 * SR)
@@ -269,22 +284,35 @@ def mix(edit, out_path):
         pos += len(seg)
     tmp = out_path + ".voice_raw.wav"
     sf.write(tmp, voice[:n].astype(np.float32), SR, subtype="FLOAT")
-    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", tmp, "-af", VOICE_CHAIN, "-ar", str(SR), "-c:a", "pcm_f32le",
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", tmp, "-af", edit.get("voice_chain", VOICE_CHAIN), "-ar", str(SR), "-c:a", "pcm_f32le",
                     out_path + ".voice.wav"], check=True)
     voice, _ = sf.read(out_path + ".voice.wav", always_2d=True)
     meter = pyln.Meter(SR)
     lv = meter.integrated_loudness(voice)
     # music: AB's song level, 15 LU under the voice, constant (no ducking)
-    bed_path = f"{BED}/stem_song.wav"
-    need = total + 1.6
-    if (not os.path.exists(bed_path)) or sf.info(bed_path).duration < need:
-        subprocess.run([sys.executable, f"{SCRIPTS}/song_bed.py", SONG, str(total + 0.1), BED], check=True)
+    if edit.get("music") == "pad":                        # thank-you video: the soft string pad in G
+        bed_path = out_path + ".pad.wav"
+        subprocess.run([sys.executable, f"{SCRIPTS}/pad.py", str(total + 1.0), bed_path], check=True)
+    else:
+        bed_path = f"{BED}/stem_song.wav"
+        need = total + 1.6
+        if (not os.path.exists(bed_path)) or sf.info(bed_path).duration < need:
+            subprocess.run([sys.executable, f"{SCRIPTS}/song_bed.py", SONG, str(total + 0.1), BED], check=True)
     bed, _ = sf.read(bed_path, always_2d=True)
     bed = bed[:n]
     lb = meter.integrated_loudness(bed[: min(len(bed), 120 * SR)])
     music = bed * db(lv - edit.get("music_under_lu", 15.0) - lb)
     if len(music) < n:
         music = np.concatenate([music, np.zeros((n - len(music), 2))])
+    lift = edit.get("music_lift")                         # AB's thank-you: the bed lifts ~3.5 dB in the low end into the close
+    if lift:
+        g = np.clip((np.arange(len(music)) / SR - lift["t"]) / lift.get("ramp", 4.0), 0, 1)
+        low = signal.sosfiltfilt(signal.butter(2, 400, "low", fs=SR, output="sos"), music, axis=0)
+        music = music + low * (db(lift["db"]) - 1) * g[:, None]
+    end = edit.get("music_end")                           # stop with the picture: a short fade after the last word
+    if end:
+        g = np.clip((end + 0.6 - np.arange(len(music)) / SR) / 0.6, 0, 1)
+        music = music * g[:, None]
     # end: AB's music just stops with the picture; we let it ring 0.6 s under the last word then stop
     sfx_lib = make_sfx()
     fx = np.zeros((n + SR, 2))
@@ -301,8 +329,9 @@ def mix(edit, out_path):
                     f"loudnorm=I=-14:TP=-1.2:LRA=9:measured_I={st['input_i']}:measured_TP={st['input_tp']}:"
                     f"measured_LRA={st['input_lra']}:measured_thresh={st['input_thresh']}:offset={st['target_offset']}:linear=true",
                     "-ar", str(SR), "-c:a", "pcm_s24le", out_path], check=True)
-    for p in (tmp, pre):
-        os.remove(p)
+    for p in (tmp, pre, out_path + ".pad.wav"):
+        if os.path.exists(p):
+            os.remove(p)
     print(f"voice {lv:.1f} LUFS, music set {edit.get('music_under_lu', 15.0)} LU under it; mastered to -14 LUFS")
 
 

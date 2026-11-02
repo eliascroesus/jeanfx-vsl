@@ -84,8 +84,8 @@ def advances(kind, size, text, track):
     """x of each letter's pen position (with kerning from the font), letter spacing in px added between letters."""
     f = font(kind, size)
     xs = []
-    for i in range(len(text)):
-        xs.append(f.getlength(text[:i]) + track * i)
+    for i in range(len(text)):              # where letter i starts, kerned against the letter before it
+        xs.append(f.getlength(text[:i + 1]) - f.getlength(text[i]) + track * i)
     total = f.getlength(text) + track * (len(text) - 1)
     return xs, total
 
@@ -128,6 +128,9 @@ class Line:
             return (1.0 if dt >= i / cps else 0.0), 0.0, 0.0
         if self.reveal == "fade":
             return ease_out(dt / 0.25), 0.0, 0.0
+        if self.reveal == "rise":                      # AB's thank-you words: whole word rises in, blurred and grey
+            k = ease_out(dt / 0.25, 3)
+            return 0.45 + 0.55 * k, (1 - k) * 8.0, 0.0
         # blur: letters start staggered left to right over ~60% of the reveal; each takes ~0.16 s
         st = (self.reveal_dur * 0.55) * (i / max(len(self.text) - 1, 1))
         k = ease_out((dt - st) / max(self.reveal_dur * 0.62, 0.05), 3)
@@ -142,6 +145,12 @@ class Line:
             op_all *= clamp((self.t_out - t) / self.fade_out)
         dy = self.dy_in * (1 - ease_out((t - self.t_in) / 0.3)) if self.dy_in else 0.0
         size = int(round(self.size))
+        rgb = self.rgb
+        if self.reveal == "rise":
+            k = ease_out((t - self.t_in) / 0.25, 3)
+            dy += (1 - k) * self.size * 0.2
+            q = round(k * 4) / 4                          # grey -> white in a few steps (keeps the glyph cache small)
+            rgb = tuple(int(150 + (c - 150) * q) for c in self.rgb)
         for pass_ in ("glow", "shadow", "text"):
             if pass_ == "glow" and not self.glow:
                 continue
@@ -155,7 +164,7 @@ class Line:
                     continue
                 bi = min(range(len(BLUR_LEVELS)), key=lambda j: abs(BLUR_LEVELS[j] - bl))
                 if pass_ == "text":
-                    g, ox, oy = glyph(self.kind, size, ch, self.rgb, bi)
+                    g, ox, oy = glyph(self.kind, size, ch, rgb, bi)
                     blend(frame, g, self.x0 + self.xs[i] + dx + ox, self.y + dy + oy, op * op_all)
                 elif pass_ == "shadow":
                     sop, soff = self.shadow if isinstance(self.shadow, tuple) else (0.55, 4)

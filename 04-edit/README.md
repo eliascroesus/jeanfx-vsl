@@ -21,6 +21,11 @@ uploading; it's the editing setup.
 | `scripts/proof_clicks.py` | Finds every page switch in Jean's screen recording so each gets a mouse click |
 | `scripts/gen_stills.py` | Only used for the $100-bill texture in the money drop (LCM Dreamshaper v7, MIT licence) |
 
+Thank-you video ([`thank-you-edit/`](../thank-you-edit/)): `plan_ty.py` (the edit), `ty_motion.py` (its cards, light
+leaks, icons, carousel, application card, shrink-and-slide, testimonial wall and word-by-word text), `ty_assets.py`
+(application card stand-in, guru-style thumbnails) and `pad.py` (the string-pad music bed), with the same `render.py`
+and `mix.py`.
+
 To rebuild: `assets.py` → `gen_stills.py bill_front bill_back` → `proof_clicks.py` → `plan.py` → `render.py`. The song file isn't in this repo (it's
 copyrighted and this repo may be public); using it in a paid ad needs a licence.
 

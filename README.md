@@ -13,6 +13,7 @@ AB Trades' VSL, the numbers to check, notes for the edit and open questions for 
 | [`04-edit/`](04-edit/) | The edit: Jean's VSL rebuilt 1:1 in AB Nasdaq's style ([how it's built](04-edit/README.md)). Nothing to upload here |
 | [`thank-you-vsl-reference/`](thank-you-vsl-reference/) | The thank-you video to copy 1:1 for Jean |
 | [`thank-you-raw-footage/`](thank-you-raw-footage/) | Jean's raw thank-you recording, to edit in that style |
+| [`thank-you-edit/`](thank-you-edit/) | Jean's thank-you video, cut and edited 1:1 in AB's thank-you style: the takes used, every card and how to rebuild it |
 
 ## Uploading
 
