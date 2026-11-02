@@ -15,8 +15,8 @@ second, text sizes and colours measured on full-resolution frames, zooms tracked
 | Look | One camera (AB in front of a grey/blue wall, natural daylight), plus full-screen text cards on a **green gradient** (one red card for the negative line) |
 | Signature move | A warm **light-leak flash** (orange/yellow film burn) on every switch: 25 of them |
 | Captions | Small, low, white, built **word by word** (each word rises in from below, blurred and grey, then turns white) |
-| Zoom | **Staircase punch-ins**: the shot steps in about 10–15% every 1.5–3 s, up to about 1.5×, then resets to wide on a light-leak flash |
-| Music | A very soft, warm pad with no beat, about 18 dB under his voice |
+| Zoom | **Push in on the key word, pull back out on the next phrase** (in, out, in, out), mostly 5–15% |
+| Music | A very soft, dark pad on G (G, D, F#, Bb) with no beat, about 19 dB under his voice |
 | Sound effects | A bright airy shimmer on every light-leak transition. Nothing else |
 | Pace | 192 words per minute, only 7 pauses longer than 0.3 s (the pauses are cut out) |
 | Loudness | −16.4 LUFS, loudness range 2.7 LU (very even), true peak −0.4 dBTP |
@@ -27,7 +27,7 @@ second, text sizes and colours measured on full-resolution frames, zooms tracked
 | --- | --- | --- |
 | 0:00 | "Yo, what's up? AB here. I just wanted to thank you for filling out the application to the Syndicate." | Face. Opens tight (~1.6×) and pulls out to wide in 0.6 s. Captions |
 | 0:07.5 | "You've taken action that **90% of traders couldn't do**" | Green card: "That 90%" / "of traders couldn't do" ([06](frames/06-green-card-headline.jpg)) |
-| 0:10.1 | "and you're genuinely one step closer to changing your life around. Therefore… take this extremely seriously" | Face, two staircase zooms |
+| 0:10.1 | "and you're genuinely one step closer to changing your life around. Therefore… take this extremely seriously" | Face, pushes in on "your life around" and "extremely seriously" |
 | 0:20.1 | "the opportunity to gain the **consistency, profitability**, and that **time, location and financial freedom**" | Green card: "Consistency" / "Profitability", then three icons in dashed circles: Time, Location, Freedom ([07](frames/07-green-card-two-lines.jpg), [08](frames/08-icons-in-dashed-circles.jpg)) |
 | 0:25.6 | "that you've always been wanting" | Face |
 | 0:27.1 | "There's countless other traders inside the Syndicate that have taken advantage of this opportunity" | Green plate, a row of Discord testimonial screenshots sliding left with motion blur. Captions on top ([09](frames/09-discord-carousel.jpg)) |
@@ -35,16 +35,16 @@ second, text sizes and colours measured on full-resolution frames, zooms tracked
 | 0:35.5 | "**What are the next steps to actually become a part of The Syndicate?**" | Green card, four lines building ("What are the / next steps to actually / become a part of / The Syndicate?") |
 | 0:39.5 | "Well, as I speak to you right now, one of my best students" | Face |
 | 0:42.1 | "is currently **reviewing your application** to see if you are a good fit" | Green plate: his application form as a white rounded card, blurred, scaling up from tiny to large. Captions on top ([10](frames/10-application-card.jpg)) |
-| 0:45.7 | "and if you are, he will reach out to you personally. So make sure you have your phone in your hand… super important. Now, I know what you're probably feeling…" | Face, 18 s in four segments, staircase zooms, light-leak resets |
+| 0:45.7 | "and if you are, he will reach out to you personally. So make sure you have your phone in your hand… super important. Now, I know what you're probably feeling…" | Face, 18 s in four segments, pushes in and out on the key words |
 | 1:03.6 | "**Is this something that I can actually commit to? Will this really work out?**" | Green card, two lines (the second bigger) ([11](frames/11-question-card.jpg)) |
 | 1:07.4 | "Etc. And honestly, man, I totally get it." | Face |
 | 1:09.4 | "**The odds are stacked against most people in trading**" | **Red** card with a dark-red jagged chart line drawn across it ([12](frames/12-red-card-chart-line.jpg)) |
 | 1:12.5 | "especially right now online when there's a ton of misinformation spread" | Face |
 | 1:16.4 | "with **trading gurus**" | Four YouTube guru thumbnails flashing one after another in about a second ([13](frames/13-guru-thumbnails.jpg)) |
 | 1:17.3 | "**constantly trying to push a course into your face**" | Green card, two lines |
-| 1:20.5 | "or try to sell you a dream… that is exactly why I built the Syndicate… real guidance… mentorship and accountability and the right psychology" | Face, 21 s, staircase zooms |
+| 1:20.5 | "or try to sell you a dream… that is exactly why I built the Syndicate… real guidance… mentorship and accountability and the right psychology" | Face, 21 s, pushes in and out on the key words |
 | 1:41.9 | "**to bulletproof you against the ups and downs in trading**" | Green card with a bulletproof-vest icon above two lines ([14](frames/14-icon-and-two-lines.jpg)) |
-| 1:45.2 | "And to be honest, you can probably figure out things on your own… build the correct psychology… And if you're still wondering whether this works" | Face, 25 s, staircase zooms |
+| 1:45.2 | "And to be honest, you can probably figure out things on your own… build the correct psychology… And if you're still wondering whether this works" | Face, 25 s, pushes in and out on the key words |
 | 2:11.7 | "scroll down below this video and check out the testimonials from the members" | His shot **shrinks into a card and slides up**, revealing a wall of Discord testimonials scrolling up ([17](frames/17-face-shrinks-to-card.jpg)) |
 | 2:16.0 | "inside of the Syndicate" | "Inside of" / "The Syndicate" over the wall ([18](frames/18-testimonial-wall-title.jpg)) |
 | 2:17.8 | "These are regular people… more freedom, more control and more opportunity… So if you want to join the Syndicate…" | Face, 18 s |
@@ -97,12 +97,19 @@ He's on camera for about 60% of the video. Every graphic lasts 2–5 s; every fa
 
 ## Zoom
 
-- **Staircase punch-ins**: the frame holds, then steps in about 10–15% in about 0.3 s, holds again, steps again, every
-  1.5–3 s, climbing from 1.0× to about 1.5× (e.g. 0:47.2–0:52: 1.0 → 1.07 → 1.16 → 1.19 → 1.27 → 1.5).
-- At the top of a staircase it **resets to the wide shot on a light-leak flash** and starts again
-  ([15](frames/15-zoom-wide.jpg) → [16](frames/16-zoom-tight.jpg)).
-- The first shot opens tight (~1.6×) and pulls out to wide in about 0.6 s.
-- The long face segments (18–25 s) run three or four staircases.
+Measured a second time, more closely: his face's size in every frame (15 a second, face detector), since the wall
+behind him is too plain to track. The first reading of this as a "staircase" was wrong.
+
+- **He pushes in on the word that matters and pulls back out on the next phrase**: in, out, in, out. Examples:
+  in on "your life **around**", "extremely **seriously**", "you have your **phone** in your hand", "super
+  **important**", "sell you **a dream**", "**mentoring** you", "I built **the Syndicate**", "more **opportunity**";
+  back out on "opportunity to…", "as well. So…", "without actually…", "strategy. And that…".
+- **Size**: most pushes are 5–15%; only a handful of peak moments go further (up to ~1.5× on "super important" and
+  "profitable day trader"), on a looser frame than Jean's.
+- **Speed**: a push takes about 0.3–0.5 s; the pull-back is often a hard cut on a jump cut, otherwise a short ease.
+- **Rhythm**: one move every 1–3 s while he's on camera, always tied to the words, never two pushes in a row
+  without coming back out.
+- The first shot opens tight and pulls out to wide in about 0.6 s.
 
 ## Screens and proof
 
@@ -119,9 +126,11 @@ He's on camera for about 60% of the video. Every graphic lasts 2–5 s; every fa
 
 - **Not "Me And The Devil"**: lined up against it, nothing matches (0.7–0.8 similarity, against 0.98+ for the real song
   in the main VSL). The track isn't identifiable from here.
-- A **very soft, warm pad**: its energy sits between 80 and 500 Hz, with almost nothing above 2 kHz. Steady tones on G
-  (G2, G3) with B and D, so a G chord. **No drums or beat** anywhere.
-- About **18 dB under his voice**. With only 7 pauses longer than 0.3 s in the whole video, it's felt more than heard.
+- A **very soft, dark pad**: its energy sits between 60 and 500 Hz, with almost nothing above 2 kHz. Separated from his
+  voice (demucs) and measured again: centred on **G with D, F# and Bb** (a dark G-minor colour with the F# pulling
+  tension), steady the whole way through. **No drums or beat** anywhere (a soft pulse at ~86 BPM at most).
+- About **19 dB under his voice** (music −35.9 LUFS, voice −16.5). With only 7 pauses longer than 0.3 s in the whole
+  video, it's felt more than heard.
 - Constant, never stops; it lifts about 3–4 dB in the low end for the last 40 s (from about 2:00, into the close).
 
 ## Sound effects
@@ -144,7 +153,7 @@ He's on camera for about 60% of the video. Every graphic lasts 2–5 s; every fa
 | Application form card | A screenshot of Jean's application page (upload it to this folder) |
 | Discord carousel and testimonial wall | Jean's Discord posts in `02-results-and-b-roll/` (already there: 36 of them) |
 | Guru thumbnails | Generic guru-style thumbnails, or the same idea built as motion graphics |
-| Green / red cards, light leaks, icons, captions, staircase zooms, shimmer on transitions | Copied as they are |
+| Light leaks, captions, push-in / pull-out zooms, shimmer on transitions | Copied as they are |
 | Music | AB's track isn't identifiable. A soft pad bed built the same way (G, no beat, 18 dB under the voice), or a track you upload |
 
 Still needed: Jean's raw thank-you recording (upload it to

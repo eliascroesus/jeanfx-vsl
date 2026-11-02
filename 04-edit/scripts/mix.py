@@ -290,9 +290,15 @@ def mix(edit, out_path):
     meter = pyln.Meter(SR)
     lv = meter.integrated_loudness(voice)
     # music: AB's song level, 15 LU under the voice, constant (no ducking)
-    if edit.get("music") == "pad":                        # thank-you video: the soft string pad in G
+    if edit.get("music") == "pad":                        # thank-you video v1: the soft string pad in G
         bed_path = out_path + ".pad.wav"
         subprocess.run([sys.executable, f"{SCRIPTS}/pad.py", str(total + 1.0), bed_path], check=True)
+    elif edit.get("music") == "file":                     # a given music file (thank-you v2: AB's own bed, see thank-you-edit/README)
+        bed_path = out_path + ".pad.wav"
+        lp = edit.get("music_lowpass")
+        af = f"lowpass=f={lp}:poles=2,lowpass=f={lp}:poles=2,lowpass=f={lp}:poles=2" if lp else "anull"
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", str(edit.get("music_start", 0.0)), "-i", edit["music_path"], "-af", af,
+                        "-ac", "2", "-ar", str(SR), "-c:a", "pcm_f32le", bed_path], check=True)
     else:
         bed_path = f"{BED}/stem_song.wav"
         need = total + 1.6

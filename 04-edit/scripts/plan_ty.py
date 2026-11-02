@@ -247,20 +247,26 @@ def leak(t, on_face=False, seed=None):
     sfx("shimmer", t - 0.14, -9)
 
 
-def green(a, b, palette="green"):
-    add(type="gradplate", t0=round(a, 3), t1=round(b, 3), palette=palette, z=10)
+SCENES = [0]
+
+
+def scene(a, b, palette="green", text_at=(960, 520), dark=0.55, glow=(1700, 120)):
+    """The 3D money set behind a graphic (ty_design.Scene), each one on its own slice of the money clip."""
+    SCENES[0] += 1
+    add(type="scene", t0=round(a, 3), t1=round(b, 3), palette=palette, off=round((SCENES[0] * 5.3) % 13, 2), text_at=list(text_at),
+        dark=dark, glow=list(glow), z=10)
     GRAPHICS.append((a, b))
 
 
-def card_text(a, b, lines):
-    """A text card's lines: [(words, size, baseline y)], each word rising in on its own time."""
-    add(type="wordcap", t0=round(a, 3), t1=round(b, 3), z=84,
-        lines=[{"words": w, "size": size, "y": y, "track": -3 if size < 120 else -5} for w, size, y in lines])
+def title(a, b, lines, **kw):
+    """Wide-caps text, word by word on the word: lines = [(words, size, baseline y, options)]."""
+    add(type="title", t0=round(a, 3), t1=round(b, 3), z=84,
+        lines=[dict({"words": w, "size": size, "y": y}, **(o or {})) for w, size, y, o in lines], **kw)
 
 
-def graphic(a, b, caps=False, palette="green", leak_in=True, leak_out=True):
+def graphic(a, b, caps=False, palette="green", leak_in=True, leak_out=True, **kw):
     """A full-screen graphic from a to b with light leaks on both switches."""
-    green(a, b, palette)
+    scene(a, b, palette, **kw)
     if not caps:
         NOCAP.append((a, b))
     if leak_in:
@@ -269,15 +275,37 @@ def graphic(a, b, caps=False, palette="green", leak_in=True, leak_out=True):
         leak(b, False)
 
 
-def zoom(t, z, cx=960, cy=455, dur=0.3, ease="out", drift=0.0):
+def zoom(t, z, cx=960, cy=430, dur=0.45, ease="out", drift=0.0):
     ZOOM.append({"t": round(t, 3), "z": z, "cx": cx, "cy": cy, "dur": dur, "ease": ease, "drift": drift})
 
 
+# AB's zooms, measured again from his face size frame by frame: he pushes in on a key word and pulls back out on the
+# next phrase (in, out, in, out), not a staircase. Jean's camera is already close, so his pushes stay small (6-12%).
+# (phrase, "in" with its zoom / "out")
+ZOOM_CUES = [
+    ("thank you for filling", 1.07), ("the application to", "out"), ("elite mentorship you have", 1.1),
+    ("changing your life around", 1.1), ("therefore i want", "out"), ("extremely seriously", 1.12), ("so you now have", "out"),
+    ("always been dreaming", 1.08),
+    ("you can't as well", 1.1), ("so you might be", "out"),
+    ("one of my best students", 1.1),
+    ("reach out to you personally", 1.07), ("so make sure", "out"), ("your phone in your hand", 1.1), ("because you don't want", "out"),
+    ("super super important", 1.12), ("now i know what", "out"), ("a little hesitant", 1.08), ("and you're probably thinking", "out"),
+    ("i totally get it", 1.08),
+    ("a ton of misinformation", 1.1),
+    ("sell you a dream", 1.1), ("without actually mentoring", "out"), ("every single part", 1.08), ("and that is exactly", "out"),
+    ("why i built the elite", 1.12), ("because i know the", "out"), ("real guidance", 1.1), ("not just some sort", "out"),
+    ("an actual mentorship", 1.1), ("and the right psychology", "out"),
+    ("on your own", 1.07), ("but in reality", "out"), ("way longer", 1.1), ("and you probably won't", "out"),
+    ("cut the amount of time", 1.1), ("and prevent yourself", "out"), ("thousands of dollars", 1.1), ("and instead build", "out"),
+    ("profitable day trader and if", 1.1), ("and if you're still", "out"),
+    ("regular people", 1.08), ("they are literally", "out"), ("exactly like you", 1.1), ("and these are just", "out"),
+    ("and more opportunity", 1.1), ("and they were able", "out"), ("the skill the right way", 1.08), ("so if you want to join", "out"),
+    ("jeanfx elite mentorship", 1.12), ("and finally become", "out"),
+    ("i will see you inside", 1.1),
+]
 
 
-def staircases():
-    """AB's zoom on the face: hold, step in ~10-15% (0.3 s ease), hold, step... every 1.5-3 s up to ~1.45x, then back to
-    wide on a light-leak flash and climb again. Steps land on the jump cuts where possible (it hides them)."""
+def face_windows():
     face, t = [], 0.0
     for a, b in sorted(GRAPHICS):
         if a - t > 0.3:
@@ -285,37 +313,45 @@ def staircases():
         t = max(t, b)
     if TOTAL - t > 0.3:
         face.append((t, TOTAL))
-    incs = [0.08, 0.10, 0.06, 0.09, 0.12, 0.07]
-    starts = [w["s"] for w in WORDS]
-    for n, (a, b) in enumerate(face):
-        if n == 0:                                       # the first shot opens tight and pulls out
-            zoom(0.0, 1.6, ease="cut")
-            zoom(0.05, 1.0, dur=0.6, ease="inout")
+    return face
+
+
+def zooms():
+    """Push in on the cue word (0.45 s ease-out), pull back out on the next phrase (on the jump cut if there is one,
+    otherwise a 0.5 s ease), never two pushes in a row. Every face shot after a graphic starts wide."""
+    cues = []
+    for ph_, v in ZOOM_CUES:
+        toks = ph_.split()
+        try:
+            i, _ = ph(ph_)
+        except KeyError:
+            raise KeyError(ph_)
+        cues.append((WORDS[i]["s"], v))
+    cues.sort()
+    for n, (a, b) in enumerate(face_windows()):
+        if n == 0:
+            zoom(0.0, 1.12, ease="cut")                      # opens a touch tight and settles out (AB)
+            zoom(0.05, 1.0, dur=0.8, ease="inout")
         else:
             zoom(a, 1.0, ease="cut")
-        z, last, k = 1.0, a + (0.6 if n == 0 else 0.0), 0
-        while True:
-            lo, hi = last + 1.5, last + 3.0
-            if hi > b - 0.6 and lo > b - 0.8:
-                break
-            joins = [j for j in JOINS if lo <= j <= min(hi, b - 0.6)]
-            if joins:
-                t = joins[0]
+        state = 1.0
+        for t, v in cues:
+            if not (a + 0.35 <= t <= b - 0.35):
+                continue
+            if v == "out":
+                if state == 1.0:
+                    continue
+                j = [x for x in JOINS if abs(x - t) < 0.12]
+                if j:
+                    zoom(j[0], 1.0, ease="cut")
+                else:
+                    zoom(t - 0.05, 1.0, dur=0.5, ease="inout")
+                state = 1.0
             else:
-                cand = [x for x in starts if last + 2.2 <= x <= min(hi, b - 0.6)]
-                if not cand:
-                    break
-                t = cand[0]
-            nz = z + incs[k % len(incs)]
-            k += 1
-            if nz > 1.46:                                # top of the staircase: reset to wide on a flash
-                leak(t, on_face=True)
-                zoom(t, 1.0, ease="cut")
-                z = 1.0
-            else:
-                zoom(t, round(nz, 3), dur=0.3)
-                z = nz
-            last = t
+                if state != 1.0:
+                    continue
+                zoom(t - 0.08, v, dur=0.45, ease="out")
+                state = v
 
 
 def captions():
@@ -370,6 +406,9 @@ def cap_icon(phrase, icon, after=0.0, size=130):
 
 
 # ---------------------------------------------------------------- the edit: AB's beats, on Jean's words
+# AB's own music bed, separated from his thank-you video (demucs htdemucs, everything but the voice) and low-passed at
+# 2.2 kHz, where his bed has no content and the separation leftovers of his voice and shimmers live. Not in the repo.
+MUSIC = "/home/user/work/ty/sep/htdemucs/ab_ty/no_vocals.wav"
 WALL = ["crop/wall_18.07.30.png", "crop/wall_18.06.18.png", "crop/wall_18.07.37.png", "crop/wall_18.06.52.png",
         "crop/wall_18.08.02.png", "crop/wall_18.10.55.png", "crop/wall_18.11.10.png", "crop/wall_18.11.16.png",
         "crop/wall_18.07.14.png", "crop/wall_18.10.04.png", "crop/wall_18.08.13.png", "crop/wall_18.07.47.png",
@@ -381,95 +420,124 @@ def until(phrase, after=0.0, pad=0.05):
     return s(phrase, after) - pad
 
 
+ACC = {"accent": True}
+ACCU = {"accent": True, "underline": True}
+HAND = {"face": "hand", "accent": True}
+
+
+def L(phrase, a, size, y, text=None, **o):
+    return (words(phrase, a, text=text), size, y, o)
+
+
 def beats():
-    # 0:00 face, opens tight and pulls out (staircases() does the zoom); captions
-    # "that 90% of the traders couldn't do": green card, headline + sub-line
+    # "that 90% of the traders couldn't do": the number counts up in neon, handwritten line under it
     a, b = s("that 90%") - 0.1, until("and you genuinely")
-    graphic(a, b)
-    card_text(a, b, [(words("that 90%", a, text="That 90%"), 170, 450), (words("of the traders couldn't do", a), 72, 540)])
-    # "the consistency, profitability, and that time, location and financial freedom": list card, then three icons
+    graphic(a, b, text_at=(960, 560))
+    w90 = words("that 90%", a, text="THAT 90%")
+    w90[1].update(accent=True, underline=True, count=[0, 90, "%d%%"])
+    title(a, b, [(w90, 160, 545, None), L("of the traders couldn't do", a, 98, 680, **HAND)])
+    sfx("roll08", w90[1]["t"], -24)
+    # "the consistency, profitability, and that time, location and financial freedom"
     a, mid, b = s("consistency") - 0.15, until("and that time"), until("that you've always")
     graphic(a, b)
-    card_text(a, mid, [(words("consistency", a, text="Consistency"), 94, 528), (words("profitability", a, text="Profitability"), 94, 630)])
+    title(a, mid, [L("consistency", a, 116, 500, "CONSISTENCY"), L("profitability", a, 116, 640, "PROFITABILITY", **ACCU)])
     leak(mid)
-    for k, (w, ic, lb) in enumerate([("time", "time", "Time"), ("location", "location", "Location"), ("freedom", "freedom", "Freedom")]):
-        add(type="iconcircle", t0=round(s(w, mid) - 0.04, 3), t1=round(b, 3), icon=ic, label=lb, cx=504 + 456 * k, cy=525)
+    for k, (w, ic, lb) in enumerate([("time", "time", "TIME"), ("location", "location", "LOCATION"), ("freedom", "freedom", "FREEDOM")]):
+        t = s(w, mid) - 0.04
+        add(type="icontile", t0=round(t, 3), t1=round(b, 3), icon=ic, label=lb, cx=560 + 400 * k, cy=470, size=270, phase=k, z=82)
+        sfx("pop", t, -17)
     # "there's countless other traders inside the Elite Mentorship that have taken advantage of this opportunity":
-    # testimonial posts sliding left on the green plate, captions on top
+    # Discord posts drifting past at three depths, captions on top
     a, b = s("there's countless") - 0.08, until("so there's no reason")
-    graphic(a, b, caps=True)
-    add(type="carousel", t0=round(a, 3), t1=round(b, 3), imgs=WALL[:9], h=560, x0=60, travel=round(520 * (b - a)), cy=470,
-        z=40, seed=4)
-    # "what are the next steps to actually be part of the Elite Mentorship program?": four lines building
+    graphic(a, b, caps=True, dark=0.3)
+    add(type="carousel3d", t0=round(a, 3), t1=round(b, 3), imgs=WALL, w=560, seed=4, z=40)
+    sfx("whoosh_long", a + 0.05, -22)
+    # "what are the next steps to actually be part of the Elite Mentorship program?"
     a, b = s("what are the next") - 0.1, until("well as i speak")
     graphic(a, b)
-    card_text(a, b, [(words("what are the", a, text="What are the"), 88, 400), (words("next steps to actually", a), 88, 496),
-                     (words("be part of the", a), 88, 592), (words("elite mentorship program", a, text="Elite Mentorship program?"), 88, 688)])
-    # "is currently reviewing your application": the application page as a white card, blurred, scaling up
+    title(a, b, [L("what are the", a, 78, 420, "WHAT ARE THE"), L("next steps", a, 170, 585, "NEXT STEPS", **ACCU),
+                 L("to actually be part of the elite mentorship program", a, 80, 720,
+                   "to actually be part of the Elite Mentorship program?", **HAND)])
+    # "is currently reviewing your application": the application in a glowing frame, flying in, then scanned field by field
     a, b = s("is currently reviewing") - 0.05, until("and if you are")
-    graphic(a, b, caps=True)
-    add(type="zoomcard", t0=round(a, 3), t1=round(b, 3), img="ty/app_card.png", w=1460, blur=7, radius=40, cx=952, cy=540,
-        **{"from": [960, 540]}, s0=0.06, dur=0.6, z=60)
+    graphic(a, b, caps=True, dark=0.35)
+    add(type="screen", t0=round(a, 3), t1=round(b, 3), img="ty/app_card.png", w=1300, blur=6, cx=960, cy=470, scan=True,
+        scan_dur=2.4, checks=[0.31, 0.45, 0.59], z=60)
+    sfx("whoosh", a + 0.02, -18)
+    for k, fy in enumerate([0.31, 0.45, 0.59]):
+        sfx(f"click{k}", a + 0.8 + 2.4 * (fy + 0.02), -16)
     # face: phone in hand and the call get a small line icon over the caption
     cap_icon("your phone in your hand", "phone", 46)
     cap_icon("this call", "phone_ring", 46)
-    # "is this something that I can actually commit to? Will this really work out?": two lines, the second bigger
+    # "is this something that I can actually commit to? Will this really work out?"
     a, b = s("is this something") - 0.1, until("etc")
     graphic(a, b)
-    card_text(a, b, [(words("is this something that i can actually commit to", a, text="Is this something that I can actually commit to?"), 64, 515),
-                     (words("will this really work out", a, text="Will this really work out?"), 104, 632)])
-    # "the odds are stacked against most people in trading": the red card with the falling line
+    title(a, b, [L("is this something that i can actually commit to", a, 76, 430,
+                   "is this something that I can actually commit to?", **HAND),
+                 L("will this really", a, 116, 575, "WILL THIS REALLY"), L("work out", a, 168, 740, "WORK OUT?", **ACCU)])
+    # "the odds are stacked against most people in trading": red set, a neon chart line crashing down
     a, b = s("the odds are stacked") - 0.1, until("especially right now")
-    graphic(a, b, palette="red")
-    add(type="jagline", t0=round(a, 3), t1=round(b, 3), dur=1.1, z=30)
-    card_text(a, b, [(words("the odds are stacked", a, text="The odds are Stacked"), 100, 515),
-                     (words("against most people in trading", a, text="Against Most People In Trading"), 100, 618)])
-    # "with trading gurus": four guru thumbnails one after another, captions on
+    graphic(a, b, palette="red", glow=(300, 100))
+    add(type="neonline", t0=round(a, 3), t1=round(b, 3), dur=1.2, z=30)
+    sfx("impact", a + 0.05, -22)
+    ws = words("the odds are stacked", a, text="THE ODDS ARE STACKED")
+    ws[3].update(accent=True, underline=True)
+    title(a, b, [(ws, 112, 500, None), L("against most people in trading", a, 92, 630, **HAND)], accent_rgb=[255, 48, 72])
+    # "with trading gurus": four guru-style thumbnails slamming in
     a, b = s("with trading gurus") - 0.05, until("constantly trying", pad=0.06)
-    graphic(a, b, caps=True, leak_out=False)
-    add(type="seq", t0=round(a, 3), t1=round(b, 3), imgs=[f"ty/guru_{k}.png" for k in (1, 2, 3, 4)], w=1230,
-        each=round(min(0.6, max(0.25, (b - a) / 4)), 3), cx=960, cy=500, z=60)
-    # "constantly trying to push a course into your face": two lines
+    graphic(a, b, caps=True, leak_out=False, dark=0.3)
+    each = round(min(0.6, max(0.25, (b - a) / 4)), 3)
+    add(type="guruflash", t0=round(a, 3), t1=round(b, 3), imgs=[f"ty/guru_{k}.png" for k in (1, 2, 3, 4)], w=1180, each=each,
+        cx=960, cy=470, z=60)
+    for k in range(4):
+        sfx("swish", a + k * each, -15)
+    # "constantly trying to push a course into your face"
     a, b = s("constantly trying") - 0.06, until("or trying to sell")
     graphic(a, b, leak_in=True)
-    card_text(a, b, [(words("constantly trying to push", a, text="Constantly trying to push"), 94, 520),
-                     (words("a course into your face", a), 94, 622)])
-    # "to bulletproof you against the ups and downs in trading": shield icon over two lines
+    title(a, b, [L("constantly trying to push", a, 84, 450, "CONSTANTLY TRYING TO PUSH"),
+                 L("a course", a, 170, 615, "A COURSE", **ACCU), L("into your face", a, 92, 740, **HAND)])
+    # "to bulletproof you against the ups and downs in trading": shield tile, the ups and downs drawn behind
     a, b = s("to bulletproof you") - 0.06, until("and to be honest")
-    graphic(a, b)
-    add(type="lineicon", t0=round(a + 0.05, 3), t1=round(b, 3), icon="shield", cx=960, cy=400, size=170, z=81)
-    card_text(a, b, [(words("to bulletproof you", a, text="To Bulletproof You"), 86, 560),
-                     (words("against the ups and downs in trading", a), 86, 650)])
+    graphic(a, b, text_at=(960, 560))
+    add(type="neonline", t0=round(a + 0.6, 3), t1=round(b, 3), dur=1.6, rgb=list((62, 255, 142)), z=30, op=0.55,
+        pts=[(-40, 930), (260, 820), (470, 900), (720, 760), (930, 860), (1180, 700), (1400, 800), (1650, 640), (1980, 700)])
+    add(type="icontile", t0=round(a + 0.02, 3), t1=round(b, 3), icon="shield", cx=960, cy=320, size=250, z=82)
+    sfx("pop", a + 0.02, -17)
+    ws = words("to bulletproof you", a, text="TO BULLETPROOF YOU")
+    ws[1].update(accent=True, underline=True)
+    title(a, b, [(ws, 112, 600, None), L("against the ups and downs in trading", a, 88, 720, **HAND)])
     # "scroll down below this video and check out the testimonials from the members themselves inside the Elite
-    # Mentorship program": the shot shrinks into a card and slides up off the top over a wall of posts scrolling up,
-    # then the title builds over the wall
+    # Mentorship program": the shot shrinks into a glowing frame and slides up over the wall of posts, tilted back
     a, b = s("scroll down below") - 0.05, until("and remember these")
-    green(a, b)
-    add(type="wallup", t0=round(a, 3), t1=round(b + 0.4, 3), imgs=WALL + WALL[:4], cols=3, card_w=520, y_start=1150,
-        y_end=-1500, ease=False, z=15, seed=6)
-    add(type="shrinkup", t0=round(a, 3), t1=round(a + 2.0, 3), shrink=0.6, hold=0.55, slide=0.7, scale=0.52, cy=492, z=70)
+    scene(a, b, dark=0.25, glow=(960, 1080))
+    add(type="wall3d", t0=round(a, 3), t1=round(b + 0.4, 3), imgs=WALL + WALL[:4], cols=3, card_w=560, y_start=1100,
+        y_end=-1700, ease=False, z=15, seed=6, tilt=0.2)
+    add(type="frameshot", t0=round(a, 3), t1=round(a + 2.0, 3), shrink=0.6, hold=0.6, slide=0.7, scale=0.56, cy=470, z=70)
+    sfx("whoosh_up", a + 1.15, -18)
     zoom(a, 1.0, dur=0.55, ease="inout")
     ti = s("inside the elite mentorship", a) - 0.05
-    card_text(ti, b, [(words("inside the", ti, text="Inside the"), 94, 795), (words("elite mentorship", ti, text="Elite Mentorship"), 94, 885)])
+    title(ti, b, [L("inside the", ti, 78, 470, "INSIDE THE"), L("elite mentorship", ti, 132, 620, "ELITE MENTORSHIP", **ACCU)],
+          backdrop=True)
     NOCAP.append((ti, b))
     leak(b)
-    # "be on the lookout for that call from my team": ringing phone over two lines
+    # "be on the lookout for that call from my team": the phone ringing in its tile
     a, b = s("be on the lookout") - 0.06, until("thanks once again")
-    graphic(a, b)
-    add(type="lineicon", t0=round(a + 0.05, 3), t1=round(b, 3), icon="phone_ring", cx=960, cy=400, size=170, z=81)
-    card_text(a, b, [(words("be on the lookout", a, text="Be on the lookout"), 88, 560),
-                     (words("for that call from my team", a), 88, 650)])
-    # "Thanks once again for applying. I will see you inside." face, ends on the last word
+    graphic(a, b, text_at=(960, 700))
+    add(type="ripple", t0=round(a, 3), t1=round(b, 3), cx=960, cy=310, r0=150, travel=150, z=81)
+    add(type="icontile", t0=round(a + 0.02, 3), t1=round(b, 3), icon="phone_ring", cx=960, cy=310, size=230, z=82)
+    sfx("pop", a + 0.02, -17)
+    title(a, b, [L("be on the lookout", a, 112, 720, "BE ON THE LOOKOUT"), L("for that call from my team", a, 90, 835, **HAND)])
+    # "Thanks once again for applying. I will see you inside." face, ends on his last word
 
 
 def main():
     out = sys.argv[2]
     beats()
-    staircases()
+    zooms()
     captions()
     edit = {"raw": RAW, "raw_fps_fix": True, "total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL,
             "sfx": sorted(SFX, key=lambda x: x["t"]), "zoom": sorted(ZOOM, key=lambda x: x["t"]),
-            "music": "pad", "music_under_lu": 18.0, "music_lift": {"t": round(TOTAL - 40, 2), "db": 3.5, "ramp": 6.0},
+            "music": "file", "music_path": MUSIC, "music_lowpass": 2200, "music_under_lu": 18.0,
             "music_end": round(END, 3), "sfx_gain_db": 0.0,
             "takes_raw": [[round(a, 3), round(b, 3)] for a, b in TAKES]}
     json.dump(edit, open(out, "w"), indent=0)
