@@ -17,6 +17,9 @@ with the graphics built to Iman Gadzhi's standard.
   handwritten accent lines, a dot grid, glowing frames around screens, glass icon tiles.
 - **Music**: AB's own bed (see below).
 
+**v3**: the music is now "Me And The Devil" (instrumental), the same boom-free bed as the main VSL, at the level
+set on the main VSL (13.5 LU under the voice). Picture and sound effects are unchanged from v2.
+
 | | AB's thank-you | Jean's |
 | --- | --- | --- |
 | Length | 2:41 | 2:38 (from 11:21 of raw) |
@@ -25,7 +28,7 @@ with the graphics built to Iman Gadzhi's standard.
 | Proof / screens | Discord carousel, application card, guru thumbnails, testimonial wall | The same four |
 | Captions | Word by word, rising in | The same |
 | Zoom | Push in on the key word, back out on the next phrase | The same, smaller |
-| Music | Soft dark pad on G, no beat, ~19 dB under the voice | AB's own bed, 18 dB under |
+| Music | Soft dark pad on G, no beat, ~19 dB under the voice | "Me And The Devil" without the boom (as in the main VSL), 13.5 LU under |
 | Sound effects | An airy shimmer on every light leak | The same, plus soft pops on the icons, whooshes on the screens, swishes on the guru thumbnails, ticks on the application checks |
 
 ## How the raw take was cut
@@ -78,13 +81,14 @@ the last line ("That was not easy man…").
 
 ## The music
 
-It's **AB's own music bed**, taken out of his thank-you video: the voice was separated out (demucs), and everything
-above 2.2 kHz was cut, which is where the leftovers of his voice and his shimmer sounds sit (his bed has no content up
-there). Measured: a soft, dark pad on G (G, D, F#, Bb), no beat. It sits 18 dB under Jean's voice.
+"Me And The Devil" (instrumental), the song AB uses in his main VSL, built into a bed by
+[`04-edit/scripts/song_bed.py`](../04-edit/scripts/song_bed.py) exactly as for Jean's main VSL: the boom (808 sub-bass
+and kick) taken out, started where AB starts it and looped the way he loops it. It sits 13.5 LU under Jean's voice,
+the level set by ear on the main VSL, constant, and stops just after his last word. The song file isn't in this repo
+(it's copyrighted); using it in a paid ad needs a licence.
 
-The file isn't in this repo, and it's someone else's licensed track: **before this runs as a paid ad, find out what it
-is and license it.** The quickest way is to Shazam AB's thank-you video on a phone (this environment can't reach
-Shazam). Upload the original track and it replaces the separated copy (`MUSIC` in `plan_ty.py`).
+v2 used AB's own thank-you bed instead (separated from his video, `ty/sep` in the work folder); that's still one setting
+away (`"music": "file"` in `plan_ty.py`).
 
 ## Where else it differs from AB, and why
 

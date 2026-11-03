@@ -406,9 +406,8 @@ def cap_icon(phrase, icon, after=0.0, size=130):
 
 
 # ---------------------------------------------------------------- the edit: AB's beats, on Jean's words
-# AB's own music bed, separated from his thank-you video (demucs htdemucs, everything but the voice) and low-passed at
-# 2.2 kHz, where his bed has no content and the separation leftovers of his voice and shimmers live. Not in the repo.
-MUSIC = "/home/user/work/ty/sep/htdemucs/ab_ty/no_vocals.wav"
+# Music: "Me And The Devil" (instrumental), the same boom-free bed as the main VSL (song_bed.py), at the level set by
+# ear on the main VSL (13.5 LU under the voice). v2 used AB's own thank-you bed, separated from his video.
 WALL = ["crop/wall_18.07.30.png", "crop/wall_18.06.18.png", "crop/wall_18.07.37.png", "crop/wall_18.06.52.png",
         "crop/wall_18.08.02.png", "crop/wall_18.10.55.png", "crop/wall_18.11.10.png", "crop/wall_18.11.16.png",
         "crop/wall_18.07.14.png", "crop/wall_18.10.04.png", "crop/wall_18.08.13.png", "crop/wall_18.07.47.png",
@@ -537,7 +536,7 @@ def main():
     captions()
     edit = {"raw": RAW, "raw_fps_fix": True, "total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL,
             "sfx": sorted(SFX, key=lambda x: x["t"]), "zoom": sorted(ZOOM, key=lambda x: x["t"]),
-            "music": "file", "music_path": MUSIC, "music_lowpass": 2200, "music_under_lu": 18.0,
+            "music": "song", "music_under_lu": 13.5,
             "music_end": round(END, 3), "sfx_gain_db": 0.0,
             "takes_raw": [[round(a, 3), round(b, 3)] for a, b in TAKES]}
     json.dump(edit, open(out, "w"), indent=0)

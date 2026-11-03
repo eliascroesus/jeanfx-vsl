@@ -6810,10 +6810,8 @@
 "drift": 0.0
 }
 ],
-"music": "file",
-"music_path": "/home/user/work/ty/sep/htdemucs/ab_ty/no_vocals.wav",
-"music_lowpass": 2200,
-"music_under_lu": 18.0,
+"music": "song",
+"music_under_lu": 13.5,
 "music_end": 157.52,
 "sfx_gain_db": 0.0,
 "takes_raw": [
