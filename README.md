@@ -13,6 +13,7 @@ AB Trades' VSL, the numbers to check, notes for the edit and open questions for 
 | [`04-edit/`](04-edit/) | The edit: Jean's VSL rebuilt 1:1 in AB Nasdaq's style ([how it's built](04-edit/README.md)). Nothing to upload here |
 | [`thank-you-vsl-reference/`](thank-you-vsl-reference/) | The thank-you video to copy 1:1 for Jean |
 | [`thank-you-raw-footage/`](thank-you-raw-footage/) | Jean's raw thank-you recording, to edit in that style |
+| [`faq-raw-footage/`](faq-raw-footage/) | Jean's raw FAQ videos, to edit |
 | [`thank-you-edit/`](thank-you-edit/) | Jean's thank-you video, cut and edited 1:1 in AB's thank-you style: the takes used, every card and how to rebuild it |
 
 ## Uploading
@@ -33,6 +34,7 @@ then click **Publish release**:
 | Raw VSL footage | [releases/new?tag=raw-vsl-footage](https://github.com/eliascroesus/jeanfx-vsl/releases/new?tag=raw-vsl-footage&title=Raw%20VSL%20footage) |
 | Thank-you VSL reference | [releases/new?tag=thank-you-vsl-reference](https://github.com/eliascroesus/jeanfx-vsl/releases/new?tag=thank-you-vsl-reference&title=Thank-you%20VSL%20reference) |
 | Thank-you raw footage | [releases/new?tag=thank-you-raw-footage](https://github.com/eliascroesus/jeanfx-vsl/releases/new?tag=thank-you-raw-footage&title=Thank-you%20raw%20footage) |
+| FAQ raw footage | [releases/new?tag=faq-raw-footage](https://github.com/eliascroesus/jeanfx-vsl/releases/new?tag=faq-raw-footage&title=FAQ%20raw%20footage) |
 
 To add more videos to a release later, open it under **Releases**, click the pencil (Edit), attach the
 files and click **Update release**. Files over 2 GB need to be split or exported smaller first.
