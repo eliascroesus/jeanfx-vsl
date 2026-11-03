@@ -290,7 +290,9 @@ def mix(edit, out_path):
     meter = pyln.Meter(SR)
     lv = meter.integrated_loudness(voice)
     # music: AB's song level, 15 LU under the voice, constant (no ducking)
-    if edit.get("music") == "pad":                        # thank-you video v1: the soft string pad in G
+    if edit.get("music") == "none":                       # FAQ videos: no music (asked for)
+        bed_path = None
+    elif edit.get("music") == "pad":                        # thank-you video v1: the soft string pad in G
         bed_path = out_path + ".pad.wav"
         subprocess.run([sys.executable, f"{SCRIPTS}/pad.py", str(total + 1.0), bed_path], check=True)
     elif edit.get("music") == "file":                     # a given music file (thank-you v2: AB's own bed, see thank-you-edit/README)
@@ -304,9 +306,9 @@ def mix(edit, out_path):
         need = total + 1.6
         if (not os.path.exists(bed_path)) or sf.info(bed_path).duration < need:
             subprocess.run([sys.executable, f"{SCRIPTS}/song_bed.py", SONG, str(total + 0.1), BED], check=True)
-    bed, _ = sf.read(bed_path, always_2d=True)
+    bed = sf.read(bed_path, always_2d=True)[0] if bed_path else np.zeros((n, 2))
     bed = bed[:n]
-    lb = meter.integrated_loudness(bed[: min(len(bed), 120 * SR)])
+    lb = meter.integrated_loudness(bed[: min(len(bed), 120 * SR)]) if bed_path else 0.0
     music = bed * db(lv - edit.get("music_under_lu", 15.0) - lb)
     if len(music) < n:
         music = np.concatenate([music, np.zeros((n - len(music), 2))])

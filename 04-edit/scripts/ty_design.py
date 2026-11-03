@@ -99,14 +99,18 @@ class Scene(El):
     def __init__(self, d):
         super().__init__(d)
         self.dec, self.next = None, None
-        self.off = d.get("off", 0.0) % max(0.1, BG_LEN - (self.t1 - self.t0) - 0.2)
+        self.off = d.get("off", 0.0) % max(0.1, BG_LEN - min(self.t1 - self.t0, BG_LEN - 1) - 0.2)
 
     def _read(self, t):
         k = int(round((t - self.t0) * 30))
+        n_clip = int(BG_LEN * 30) - 2
+        k0 = int(round(self.off * 30))
+        if (k0 + k) // n_clip != (k0 + k - 1) // n_clip:      # long graphics: loop the money clip
+            self.next = None
         if self.dec is None or k != self.next:
             if self.dec:
                 self.dec.kill()
-            self.dec = subprocess.Popen(["ffmpeg", "-v", "error", "-ss", f"{self.off + k / 30:.3f}", "-i", BG_CLIP, "-f", "rawvideo",
+            self.dec = subprocess.Popen(["ffmpeg", "-v", "error", "-ss", f"{((k0 + k) % n_clip) / 30:.3f}", "-i", BG_CLIP, "-f", "rawvideo",
                                          "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
             self.next = k
         raw = self.dec.stdout.read(W * H * 3)
@@ -155,6 +159,14 @@ class Title(El):
         self.lines = []
         for L in d["lines"]:
             face, size, track = L.get("face", "wide"), L["size"], L.get("track", 0)
+            # never wider than the frame: shrink the line until it fits in 1720 px
+            for _ in range(12):
+                sp = font(face, size).getlength(" ") + track * 2
+                wtot = sum(text_rgba(w["w"] if not w.get("count") else w["count"][2] % w["count"][1], face, size, (255, 255, 255), track)[3]
+                           for w in L["words"]) + sp * (len(L["words"]) - 1)
+                if wtot <= d.get("max_w", 1720):
+                    break
+                size = int(size * d.get("max_w", 1720) / wtot * 0.98)
             sp = font(face, size).getlength(" ") + track * 2
             items, x = [], 0.0
             for w in L["words"]:
