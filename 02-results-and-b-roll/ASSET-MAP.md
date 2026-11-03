@@ -106,3 +106,20 @@ about **$25,800**, plus Muhammad's $33,026.45 if he's confirmed as a student.
 4. **Kibron, Lawrence and Desmond**: a photo of each (or their OK to use their Discord avatar), and Kibron's warehouse
    job story if there's anything to show.
 5. **Music**: licensed tracks if there's a preference; otherwise an original score like the Ricky edit.
+
+## Struggle period (`struggle-period/`)
+
+Jean's own photos from before trading worked, used in the VSL's story section (v6):
+
+| Photo | What's on it | Where it's used |
+| --- | --- | --- |
+| `IMG_0049`, `IMG_0051` | Jean at school back home, in uniform with classmates | "I came to the United States when I was 18" |
+| `73CD2F9C…` | His high-school soccer team (Chavez) | "After school…" (first photo of the pile) |
+| `70569587305…`, `IMG_1642`, `IMG_1643`, `IMG_2027`, `IMG_1722` | DoorDash drop-off photos at customers' doors, day and night | "I would DoorDash till midnight, making $500 a week" (they pile up) |
+| `b8e946dd…` | Jean with his mom, laptop open | "My mom ended up finding out" |
+| `IMG_1748` | Popeyes through a rainy windshield at night | "I sat in my car and I was like, damn, what am I doing?" (full screen) |
+| `9738875F…` | Jean at his desk with a chart on the laptop, thumbs up | "Not long ago, I was exactly where you were" |
+| `0148B1FA…` | Jean in his Schlotzsky's work shirt and headset | "I went from broke with nothing to my name, DoorDashing till midnight" |
+| `IMG_1643` | A night-time drop-off | Same moment, next to the work photo |
+| `70520557737…`, `70572302333…`, `70578050769…` | More drop-offs | Spare |
+| `E5298EE3…` | Mirror selfie | Spare |

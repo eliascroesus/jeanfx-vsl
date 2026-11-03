@@ -210,6 +210,12 @@ def card(img, a, b, cx, cy, w=0, h=0, anim="pop", z=60, sound=True, **kw):
         mclick(a + (kw.get("dur", 0.4) * 0.6 if anim == "fly" else 0.0))
 
 
+def photo(name, a, b, cx, cy, h=600, rot=0.0, anim="pop", z=60, **kw):
+    """One of Jean's own photos (02-results-and-b-roll/struggle-period) as a white-bordered print with a soft shadow,
+    popping in with a mouse click, tilted a few degrees so a pile of them reads as a stack of real photos."""
+    card(f"struggle/{name}.png", a, b, cx, cy, h=h, anim=anim, z=z, border=14, radius=10, shadow=0.5, rot=rot, **kw)
+
+
 def zoom(t, z, cx=960, cy=470, dur=0.35, ease="out", drift=0.004, side=False):
     ZOOM.append({"t": round(t, 3), "z": z, "cx": cx, "cy": cy, "dur": dur, "ease": ease, "drift": drift, "side": side})
 
@@ -426,15 +432,27 @@ sfx("whoosh", aa, -24, 0.12)
 # ---- the story ---------------------------------------------------------------------------------------------------
 zoom(abb, 1.0, ease="cut")
 zoom(m(s("I had to find out")), 1.22, dur=0.3)
-keynote(s("I came to the United States"), s("After school"), [("I came to the U.S.", "I came to"), ("at 18 years old", "when I was 18")])
+# "I came to the United States when I was 18": his school photos from back home pile up, the words beside them
+ua, ub = m(s("I came to the United States")), m(s("After school"))
+plate(ua, ub, PLATE_GREY)
+photo("school1", ua, ub, 560, 520, h=470, rot=-5)
+photo("school2", m(s("United States")), ub, 620, 560, h=470, rot=4)
+text(ua, ub, [line("I came to the U.S.", "semibold", 92, BLACK, 1400, 500, ua, align="center", track=-5),
+              line("at 18 years old", "bold", 112, BLACK, 1400, 630, m(s("when I was 18")), align="center", track=-6)])
+click(ua); click(m(s("when I was 18")))
+sfx("whoosh", ua, -26, 0.15)
+# "After school, I would DoorDash till midnight, making $500 a week": his own drop-off photos piling up
 da, db_ = m(s("After school")), m(s("Guess what", 200))
 plate(da, db_, (0, 0, 0))
-add(type="earnings", t0=da, t1=db_, cx=1390, cy=540, total=500, z=60)
+pile = [("soccer", da, 1340, 520, 520, -4), ("dd_welcome", m(s("I would", 200)), 1240, 540, 700, 5),
+        ("dd_friends", m(s("to midnight")) - 0.2, 1420, 520, 700, -6), ("dd_night", m(s("to midnight")) + 0.15, 1300, 560, 700, 3),
+        ("dd_wreath", m(s("making $500")) - 0.1, 1460, 540, 700, -3), ("dd_grey", m(s("making $500")) + 0.55, 1330, 530, 700, 6)]
+for k, (nm, t, x, y, hh, r) in enumerate(pile):
+    photo(nm, t, db_, x, y, h=hh, rot=r, z=60 + k)
 MONEY.append((m(s("making $500")) + 0.1, "cash_light", -16))
-mclick(da)
-text(da, db_, [line("DoorDashing", "medium", 84, WHITE, 600, 430, da, align="center", track=-4),
-               line("till midnight", "medium", 84, WHITE, 600, 530, m(s("to midnight")), align="center", track=-4),
-               line("$500/week", "bold", 140, WHITE, 600, 690, m(s("making $500")), align="center", track=-7)])
+text(da, db_, [line("DoorDashing", "medium", 84, WHITE, 560, 430, da, align="center", track=-4),
+               line("till midnight", "medium", 84, WHITE, 560, 530, m(s("to midnight")), align="center", track=-4),
+               line("$500/week", "bold", 140, WHITE, 560, 690, m(s("making $500")), align="center", track=-7)])
 for tt in (da, m(s("to midnight")), m(s("making $500"))):
     click(tt)
 sfx("whoosh", da, -24, 0.12)
@@ -470,10 +488,16 @@ text(la2, lb2, [line("I lost", "medium", 100, BLACK, 640, 500, la2, align="cente
 click(la2); click(m(s("most of it")))
 sfx("whoosh", la2, -24, 0.1)
 zoom(lb2, 1.0, ease="cut")
+mo_a, mo_b = m(s("My mom ended")), m(s("And what she told"))
+plate(mo_a, mo_b, PLATE_GREY)
+photo("mom_laptop", mo_a, mo_b, 1330, 540, h=560, rot=-3)
+text(mo_a, mo_b, [line("My mom", "semibold", 100, BLACK, 470, 500, mo_a, align="center", track=-5),
+                  line("found out", "bold", 124, BLACK, 470, 640, m(s("finding out")), align="center", track=-6)])
+click(m(s("finding out")))
+sfx("whoosh", mo_a, -26, 0.12)
 side("L", s("Quit and go"), s("And then I remember"), [("quit and go", "reg", "Quit and go"), ("TO COLLEGE", "blue", "to college")])
 ca2, cb2 = m(s("I sat in my car")), m(s("One thing I learned"))
-add(type="aurora", t0=ca2, t1=cb2, palette="night", seed=13, z=14)
-add(type="particles", t0=ca2, t1=cb2, kind="bokeh", n=36, seed=14, z=16)
+add(type="still", img="struggle/car_popeyes.png", t0=ca2, t1=cb2, push=0.07, darken=0.22, z=15)   # his own photo: in the car, rain, midnight
 NOCAP.append((ca2, cb2)); CENTER.append((ca2, cb2))
 sfx("whoosh", ca2, -24, 0.12)
 zoom(cb2, 1.22, ease="cut")
@@ -513,6 +537,13 @@ zoom(m(s("how I managed to fix")), 1.22, dur=0.3)
 
 # ---- how it started --------------------------------------------------------------------------------------------
 zoom(m(s("But first")), 1.0, ease="cut")
+na_, nb_ = m(s("Not long ago")), m(s("February 2025"))
+plate(na_, nb_, PLATE_GREY)
+photo("early_desk", na_, nb_, 1350, 540, h=470, rot=3)
+text(na_, nb_, [line("not long ago", "semibold", 88, BLACK, 450, 480, na_, align="center", track=-5),
+                line("I was where", "bold", 112, BLACK, 450, 610, m(s("I was exactly")), align="center", track=-6),
+                line("you are", "bold", 112, BLACK, 450, 730, m(s("where you were")), align="center", track=-6)])
+click(m(s("I was exactly")))
 keynote(s("February 2025"), s("is when I managed"), [("In February 2025", "February")])
 fa2, fb2 = m(s("is when I managed")), m(s("You guys can go on"))
 zoom(fa2, 1.0, ease="cut", drift=0)
@@ -526,8 +557,14 @@ click(fa2); click(m(s("first 10k")))
 zoom(fb2, 1.22, ease="cut")
 keynote(s("Two months later"), s("I ended up buying"), [("Two months later", "Two months later")])
 side("R", s("I ended up buying"), s("I literally went"), [("I bought my", "reg", "buying"), ("DREAM CAR", "blue", "dream car")])
-zoom(m(s("I literally went")), 1.0, ease="cut")
-zoom(m(s("to living in a")), 1.22, dur=0.3)
+bk_a, bk_b = m(s("I literally went")), m(s("to living in a"))
+plate(bk_a, bk_b, (0, 0, 0))
+photo("job_shirt", bk_a, bk_b, 720, 620, h=720, rot=-4)
+photo("dd_night", m(s("door-dashing till", 300)), bk_b, 1200, 620, h=720, rot=4)
+text(bk_a, bk_b, [line("broke, DoorDashing till midnight", "medium", 74, WHITE, 960, 175, m(s("broke with")), align="center", track=-4)])
+sfx("whoosh", bk_a, -24, 0.12)
+zoom(bk_b, 1.0, ease="cut")
+zoom(m(s("to living in a")) + 0.6, 1.22, dur=0.3)
 
 # ---- the fix ---------------------------------------------------------------------------------------------------
 zoom(m(s("So here is what changed")), 1.0, ease="cut")
