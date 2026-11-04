@@ -4871,6 +4871,7 @@
 "music": "none",
 "music_end": 112.24,
 "sfx_gain_db": 0.0,
+"voice_denoise": "rnnoise",
 "takes_raw": [
 [
 1.0,

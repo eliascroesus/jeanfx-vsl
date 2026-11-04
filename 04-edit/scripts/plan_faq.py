@@ -452,7 +452,7 @@ def main():
     captions()
     edit = {"raw": RAW, "raw_fps_fix": True, "total": round(TOTAL, 3), "keep_frames": KEEP_F, "elements": EL,
             "sfx": sorted(SFX, key=lambda x: x["t"]), "zoom": sorted(ZOOM, key=lambda x: x["t"]),
-            "music": "none", "music_end": round(END, 3), "sfx_gain_db": 0.0,
+            "music": "none", "music_end": round(END, 3), "sfx_gain_db": 0.0, "voice_denoise": "rnnoise",
             "takes_raw": [[round(a, 3), round(b, 3)] for a, b in TAKES]}
     json.dump(edit, open(out, "w"), indent=0)
     n_cap = sum(1 for d in EL if d["type"] == "wordcap" and d.get("z") == 86)

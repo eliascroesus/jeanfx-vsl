@@ -15,6 +15,8 @@ RAW = "/home/user/work/jean/jeanfxvsl.mov"
 BED = "/home/user/work/jean/bed"
 SONG = "/home/user/work/ref/an/song.wav"
 SCRIPTS = os.path.dirname(os.path.abspath(__file__))
+# RNNoise model for ffmpeg's arnndn (https://github.com/richardpl/arnndn-models, std.rnnn)
+RNNOISE = "/home/user/work/models/rnnoise/std.rnnn"
 VOICE_CHAIN = ("highpass=f=80:poles=2,afftdn=nr=6:nf=-48,"                     # light room-noise reduction
                "equalizer=f=220:t=q:w=1.1:g=-2,equalizer=f=3200:t=q:w=1.0:g=0.8,treble=g=0.5:f=9000,"
                "acompressor=threshold=-24dB:ratio=2.5:attack=10:release=180:knee=6:makeup=4,"   # gentler than v1-v4 (3:1, 6 ms)
@@ -284,7 +286,24 @@ def mix(edit, out_path):
         pos += len(seg)
     tmp = out_path + ".voice_raw.wav"
     sf.write(tmp, voice[:n].astype(np.float32), SR, subtype="FLOAT")
-    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", tmp, "-af", edit.get("voice_chain", VOICE_CHAIN), "-ar", str(SR), "-c:a", "pcm_f32le",
+    if edit.get("voice_denoise") == "demucs":            # room noise out: keep only the voice (demucs htdemucs separation)
+        sep = out_path + "_sep"
+        subprocess.run([sys.executable, "-m", "demucs", "-n", "htdemucs", "--two-stems=vocals", "-d", "cpu", "-j", "4",
+                        "-o", sep, tmp], check=True, capture_output=True)
+        v, vsr = sf.read(f"{sep}/htdemucs/{os.path.splitext(os.path.basename(tmp))[0]}/vocals.wav", always_2d=True)
+        if vsr != SR:
+            from scipy.signal import resample_poly
+            v = resample_poly(v, SR, vsr, axis=0)
+        v = v[:n]
+        if len(v) < n:
+            v = np.concatenate([v, np.zeros((n - len(v), v.shape[1]))])
+        sf.write(tmp, v.astype(np.float32), SR, subtype="FLOAT")
+        import shutil
+        shutil.rmtree(sep, ignore_errors=True)
+    chain = edit.get("voice_chain", VOICE_CHAIN)
+    if edit.get("voice_denoise") == "rnnoise":           # room hum and hiss out (RNNoise speech model, ~20 dB less noise)
+        chain = f"arnndn=m={RNNOISE}," + chain
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", tmp, "-af", chain, "-ar", str(SR), "-c:a", "pcm_f32le",
                     out_path + ".voice.wav"], check=True)
     voice, _ = sf.read(out_path + ".voice.wav", always_2d=True)
     meter = pyln.Meter(SR)

@@ -1,7 +1,7 @@
 # FAQ videos
 
 Jean's FAQ videos, cut from the raw clips in the [FAQ raw footage release](https://github.com/eliascroesus/jeanfx-vsl/releases/tag/faq-raw-footage)
-and edited exactly like the thank-you video v2 (see [`thank-you-edit/README.md`](../thank-you-edit/README.md)): the 3D
+and edited exactly like the thank-you video v2. **v3:** the room noise (a steady hum at 117–188 Hz plus hiss) is taken out of his voice with RNNoise (ffmpeg's `arnndn`, the `std.rnnn` model from github.com/richardpl/arnndn-models) before the voice processing: about 20 dB less noise between words, his voice untouched. Picture unchanged from v2. Otherwise edited exactly like the thank-you video v2 (see [`thank-you-edit/README.md`](../thank-you-edit/README.md)): the 3D
 money set behind every graphic, wide caps blurring in word by word with the neon-green accent and drawn underlines,
 handwritten accent lines, glass icon tiles, result screenshots in glowing frames, word-by-word captions, light-leak
 flashes with the shimmer, and push-in / pull-out zooms on the key words. **No music**, as asked.
