@@ -615,5 +615,115 @@ class FrameShot(El):
         blend(frame, rgba, 960 - w / 2, cy - h / 2, 1)
 
 
+class ScreenRec(El):
+    """Jean's own screen recording, synced to the camera clip (same audio, measured offset), in a glowing frame on the
+    money set. The view glides (0.8 s ease) to what he's talking about: the payout total, each certificate, the Discord
+    reviews. His face sits in a small framed window in the corner, like AB's proof walkthrough."""
+    z = 60
+    FW, FH = 1640, 922
+
+    def __init__(self, d):
+        super().__init__(d)
+        self.dec, self.next = None, None
+        fw, fh, rad, pad = self.FW, self.FH, 30, 60
+        m = Image.new("L", (fw, fh), 0)
+        ImageDraw.Draw(m).rounded_rectangle((0, 0, fw - 1, fh - 1), rad, fill=255)
+        self.mask = np.asarray(m, np.float32)[..., None] / 255
+        bd = Image.new("L", (fw + 2 * pad, fh + 2 * pad), 0)
+        ImageDraw.Draw(bd).rounded_rectangle((pad - 2, pad - 2, pad + fw + 1, pad + fh + 1), rad + 2, outline=255, width=4)
+        b = np.asarray(bd, np.float32)
+        g = np.zeros(b.shape + (4,), np.float32)
+        g[..., :3] = ACCENT
+        g[..., 3] = np.clip(cv2.GaussianBlur(b, (0, 0), 18) * 1.3 + b, 0, 255)
+        self.ring = g
+        self.pad = pad
+        pw, ph = 400, 225
+        pm = Image.new("L", (pw, ph), 0)
+        ImageDraw.Draw(pm).rounded_rectangle((0, 0, pw - 1, ph - 1), 22, fill=255)
+        self.pmask = np.asarray(pm, np.float32)[..., None] / 255
+        pb = Image.new("L", (pw + 80, ph + 80), 0)
+        ImageDraw.Draw(pb).rounded_rectangle((38, 38, 41 + pw, 41 + ph), 24, outline=255, width=3)
+        pbb = np.asarray(pb, np.float32)
+        pr = np.zeros(pbb.shape + (4,), np.float32)
+        pr[..., :3] = ACCENT
+        pr[..., 3] = np.clip(cv2.GaussianBlur(pbb, (0, 0), 12) * 1.2 + pbb, 0, 255)
+        self.pring = pr
+
+    def _raw(self, t):
+        for a, b, r in self.d["segs"]:
+            if a - 1e-4 <= t < b + 1e-4:
+                return r + (t - a)
+        return self.d["segs"][-1][2]
+
+    def _read(self, st):
+        k = int(round(st * 30))
+        if self.dec is None or k != self.next:
+            if self.dec:
+                self.dec.kill()
+            self.dec = subprocess.Popen(["ffmpeg", "-v", "error", "-ss", f"{k / 30:.3f}", "-i", self.d["src"], "-f", "rawvideo",
+                                         "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
+            self.next = k
+        sw, sh = self.d.get("src_size", (2580, 1080))
+        raw = self.dec.stdout.read(sw * sh * 3)
+        self.next += 1
+        if len(raw) < sw * sh * 3:
+            return np.zeros((sh, sw, 3), np.uint8)
+        return np.frombuffer(raw, np.uint8).reshape(sh, sw, 3)
+
+    def close(self):
+        if self.dec:
+            self.dec.kill()
+
+    def _view(self, t):
+        vs = self.d["views"]
+        cur = vs[0][1:]
+        for i, (tv, cx, cy, w) in enumerate(vs):
+            if t < tv:
+                break
+            prev = cur
+            k = ease_in_out((t - tv) / 0.8)
+            cur = [prev[j] + ([cx, cy, w][j] - prev[j]) * k for j in range(3)]
+            if k >= 1:
+                cur = [cx, cy, w]
+        return cur
+
+    def draw(self, frame, t, ctx):
+        d = self.d
+        sc = d.get("scale", 0.75)                                  # source px per original screen px
+        img = self._read(self._raw(t) + d.get("offset", 1.03))
+        cx, cy, w = self._view(t)
+        fw, fh = self.FW, self.FH
+        cw = w * sc
+        z = fw / cw
+        x0, y0 = cx * sc - cw / 2, cy * sc - cw * fh / fw / 2
+        M = np.float32([[z, 0, -x0 * z], [0, z, -y0 * z]])
+        view = cv2.warpAffine(img, M, (fw, fh), flags=cv2.INTER_AREA if z < 1 else cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT,
+                              borderValue=(12, 14, 16)).astype(np.float32)
+        dt = t - self.t0
+        k = ease_out(dt / 0.45, 3)
+        s_ = 0.86 + 0.14 * k
+        op = clamp(dt / 0.15)
+        rgba = np.dstack([view, self.mask[..., 0] * 255])
+        ring = self.ring
+        if s_ < 0.999:
+            rgba, ring = fx.resize_rgba(rgba, s_), fx.resize_rgba(ring, s_)
+        X, Y = d.get("cx", 960), d.get("cy", 490)
+        blend(frame, _shadow(rgba, 0.75, 30), X - rgba.shape[1] / 2, Y - rgba.shape[0] / 2 + 30, op)
+        blend(frame, ring, X - ring.shape[1] / 2, Y - ring.shape[0] / 2, op)
+        blend(frame, rgba, X - rgba.shape[1] / 2, Y - rgba.shape[0] / 2, op)
+        if d.get("pip", True):                                   # his face, small, bottom right
+            shot = ctx["shot"]
+            ph, pw = self.pmask.shape[:2]
+            small = cv2.resize(shot, (pw, ph), interpolation=cv2.INTER_AREA).astype(np.float32)
+            pr = np.dstack([small, self.pmask[..., 0] * 255])
+            kp = ease_out((dt - 0.25) / 0.4, 3)
+            if kp > 0:
+                px, py = d.get("pip_at", (1640, 905))
+                py += 40 * (1 - kp)
+                blend(frame, _shadow(pr, 0.7, 18), px - pw / 2, py - ph / 2 + 16, kp)
+                blend(frame, self.pring, px - self.pring.shape[1] / 2, py - self.pring.shape[0] / 2, kp)
+                blend(frame, pr, px - pw / 2, py - ph / 2, kp)
+
+
 TYPES = {"scene": Scene, "title": Title, "icontile": IconTile, "ripple": Ripple, "screen": Screen, "carousel3d": Carousel3D,
-         "wall3d": Wall3D, "guruflash": GuruFlash, "neonline": NeonLine, "frameshot": FrameShot}
+         "wall3d": Wall3D, "guruflash": GuruFlash, "neonline": NeonLine, "frameshot": FrameShot, "screenrec": ScreenRec}

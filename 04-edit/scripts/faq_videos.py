@@ -34,7 +34,8 @@ VIDEOS = {
             (322.8, 332.0),      # I'm willing to take you from literally a beginner in trading all the way to the advanced level, as long as you're serious enough.
             (339.7, 342.05),     # See you guys inside the program, and peace out.
         ],
-        "pfix": [("my parents", "my payouts"), ("funny trader", "funded trader"), ("go to FTM,", "go to FTMO,"), ("$4,900 of $6,000,", "$4,956,"), ("ROMS got", "Rome just got"), ("case one 5k", "Phase 1 5K"), ("$90,000 payout.", "$19,000 payout."), ("Is Ivan", "Is Yvan"), ("more over $12,000,", "over $12,000,")],
+        "drop": [(21.98, 23.40), (70.85, 72.58), (118.40, 118.93), (172.87, 174.86), (236.98, 237.40), (245.75, 246.78), (252.50, 253.48)],           # repeated phrases cut (raw seconds)
+        "pfix": [("my peers", "my payouts"), ("a refunded trader", "a real funded trader"), ("go to Alphacapital.", "go to Alpha Capital."), ("my Alphacapital dashboard", "my Alpha Capital dashboard"), ("more for $12,000", "over $12,000"), ("PaysOne 5K", "Phase 1 5K"), ("Roms got", "Rome just got"), ("my parents", "my payouts"), ("funny trader", "funded trader"), ("go to FTM,", "go to FTMO,"), ("$4,900 of $6,000,", "$4,956,"), ("ROMS got", "Rome just got"), ("case one 5k", "Phase 1 5K"), ("$90,000 payout.", "$19,000 payout."), ("Is Ivan", "Is Yvan"), ("of $7,334.", "of $7,304."), ("more over $12,000,", "over $12,000,")],
     },
     "0322": {
         "file": "DJI_20261102044303_0322_D.MP4",
@@ -56,7 +57,8 @@ VIDEOS = {
             (82.4, 85.65),       # And if you've not, go ahead and fill in the application,
             (86.7, 87.55),       # see you in the next video.
         ],
-        "pfix": [("help prove", "help improve"), ("Jean Ivan", "Jean Yvan")],
+        "drop": [(15.22, 16.82), (23.15, 24.50), (31.10, 35.70), (71.20, 71.80)],           # repeated phrases cut (raw seconds)
+        "pfix": [("You're now going", "You're not going"), ("help prove", "help improve"), ("Jean Ivan", "Jean Yvan")],
     },
     "0323": {
         "file": "DJI_20261102044445_0323_D.MP4",
@@ -81,7 +83,8 @@ VIDEOS = {
             (107.9, 112.8),      # But other than that, guys: yes, you can still work a 9 to 5 and learn how to trade as well.
             (113.4, 114.4),      # See you guys in the next video.
         ],
-        "pfix": [],
+        "drop": [(48.25, 51.74), (91.00, 93.25)],           # repeated phrases cut (raw seconds)
+        "pfix": [("to create a job", "to quit your job"), ("in 905", "a 9-to-5"), ("your 905", "your 9-to-5"), ],
     },
     "0324": {
         "file": "DJI_20261102044657_0324_D.MP4",
@@ -111,6 +114,7 @@ VIDEOS = {
             (166.3, 168.7),      # They're going to reach out to you, and make sure to answer that phone call.
             (170.8, 174.35),     # See you guys inside the JeanFX trading mentorship. Peace out.
         ],
-        "pfix": [("pay $20,000 to", "pay $200 to"), ("a few of $500,000", "a fee of $500"), ("trade in 2020.", "trade in 2015."), ("trade in 2026 took", "trade in 2015 took"), ("called pro firms.", "called prop firms."), ("new pro firms", "new prop firms"), ("$500,000 to $1,000", "$500 to $1,000"), ("the GeneFX Elite", "the JeanFX Elite"), ("the GeneFX Trading", "the JeanFX Trading"), ("to not have to trade.", "to learn how to trade."), ("we will build", "we built")],
+        "drop": [(38.15, 40.25), (45.50, 46.92), (54.85, 57.20), (97.85, 98.68), (105.05, 107.78), (120.30, 121.12), (143.00, 143.75)],           # repeated phrases cut (raw seconds)
+        "pfix": [("So they're starting out", "that's starting out"), ("a few $500,000", "a fee of $500"), ("to like how to trade.", "to learn how to trade."), ("the GeneFX Elite", "the JeanFX Elite"), ("pay $20,000 to", "pay $200 to"), ("a few of $500,000", "a fee of $500"), ("trade in 2020.", "trade in 2015."), ("trade in 2026 took", "trade in 2015 took"), ("called pro firms.", "called prop firms."), ("new pro firms", "new prop firms"), ("$500,000 to $1,000", "$500 to $1,000"), ("the GeneFX Elite", "the JeanFX Elite"), ("the GeneFX Trading", "the JeanFX Trading"), ("to not have to trade.", "to learn how to trade."), ("we will build", "we built")],
     },
 }

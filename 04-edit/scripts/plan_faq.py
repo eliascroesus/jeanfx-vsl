@@ -55,6 +55,17 @@ def keep_ranges():
                 out[-1] = (out[-1][0], max(out[-1][1], y))
             else:
                 out.append((x, y))
+    for x, y in VIDEOS[KEY].get("drop", []):            # repeated phrases taken out of a take
+        nxt = []
+        for a, b in out:
+            if y <= a or x >= b:
+                nxt.append((a, b))
+                continue
+            if x > a + 0.02:
+                nxt.append((a, x))
+            if y < b - 0.02:
+                nxt.append((y, b))
+        out = nxt
     return out
 
 
@@ -402,6 +413,35 @@ def photo(name, a, b, cx, cy, h=640, rot=0.0, z=60):
     add(type="card", img=f"struggle/{name}.png", t0=round(a, 3), t1=round(b, 3), cx=cx, cy=cy, h=h, anim="pop", z=z, border=14,
         radius=10, shadow=0.5, rot=rot)
     sfx(f"mclick{int(a * 10) % 3}", a + 0.01, -15)
+
+
+SCREEN = "/home/user/work/faq/screen/screen_2580.mp4"      # the 0321 screen recording at 30 fps, scaled 0.75
+
+
+def out_of(raw):
+    """Output time of a raw time (the next kept moment if it was cut)."""
+    acc = 0.0
+    for a, b in KEEP_F:
+        if raw < a / FPS:
+            return acc
+        if raw <= b / FPS:
+            return acc + raw - a / FPS
+        acc += (b - a) / FPS
+    return acc
+
+
+def screenrec(a, b, views, offset=1.03, leak_out=True):
+    """Jean's screen recording in its glowing frame from a to b; views = [(raw time, cx, cy, width)] in the screen's own
+    3440x1440 pixels, so the shot glides to what he points at."""
+    graphic(a, b, caps=True, dark=0.35, leak_out=leak_out)
+    segs, acc = [], 0.0
+    for fa, fb in KEEP_F:
+        segs.append([round(acc, 4), round(acc + (fb - fa) / FPS, 4), round(fa / FPS, 4)])
+        acc += (fb - fa) / FPS
+    segs = [g for g in segs if g[1] > a - 0.1 and g[0] < b + 0.1]
+    vs = [[round(max(a, out_of(r)), 3), cx, cy, w] for r, cx, cy, w in views]
+    add(type="screenrec", t0=round(a, 3), t1=round(b, 3), src=SCREEN, segs=segs, views=vs, offset=offset, z=60)
+    sfx("whoosh", a + 0.02, -19)
 
 
 def main():

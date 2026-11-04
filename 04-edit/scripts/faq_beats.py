@@ -14,18 +14,10 @@ def v0321(P):
     # "I'm going to show you some of my students and some of my payouts... just this year"
     a, b = s("so i'm going to show") - 0.05, until("so you guys can go ahead")
     P.results_wall(a, b)
-    # Topstep: "I'm a real funded trader with Topstep... over $36,000 in profit just this year"
-    a, b = s("i'm a real funded") - 0.05, s("over $36,000") - 0.1
-    P.proof(a, b, "crop/topstep_19770.png", w=640, label="TOPSTEP", leak_out=False)
-    a, b = b, until("next if you guys go")
-    w = P.words("$36,000", a, text="$36,000")
-    w[0].update(accent=True, underline=True, count=[0, 36, "$%d,000"])
-    P.card_title(a, b, [([{"w": "TOPSTEP", "t": round(a + 0.05, 3)}], 70, 330, None), (w, 230, 600, None),
-                        L("in profit", a, 92, 740, "in profit, just this year", **HAND)], leak_in=False)
-    P.sfx("roll08", w[0]["t"], -24)
-    # FTMO: "I literally received the payout the same month I'm recording... over $34,000 just from FTMO alone"
-    a, b = s("next if you guys go") - 0.05, until("if you gather")
-    P.proof(a, b, "crop/ftmo_26915.png", w=640, label="FTMO")
+    # Topstep and FTMO on his actual screen: the payout total, then this month's FTMO reward and the overall rewards
+    a, b = s("i'm a real funded") - 0.05, until("if you gather")
+    P.screenrec(a, b, [(60.0, 1720, 720, 2560), (66.3, 1944, 1049, 1300), (90.9, 1720, 720, 2560), (97.8, 2064, 760, 1100),
+                       (102.0, 1480, 760, 1100), (104.6, 1770, 760, 1800)])
     # "that's over $70,000 in just under 4 months, trading with FTMO and Topstep alone"
     a, b = s("if you gather") - 0.1, until("next thing we can go")
     w = P.words("$70,000", a, text="$70,000+")
@@ -33,9 +25,9 @@ def v0321(P):
     P.card_title(a, b, [L("if you gather that all together", a, 84, 400, "FTMO + TOPSTEP"), (w, 230, 610, None),
                         L("in just under 4 months", a, 92, 750, **HAND)])
     P.sfx("roll10", w[0]["t"], -24)
-    # Alpha Capital: "$4,956, which I just started working with them"
-    a, b = s("this is my alpha capital") - 0.05, until("so far as i told")
-    P.proof(a, b, "crop/alpha_4956.png", w=900, label="ALPHA CAPITAL")
+    # Alpha Capital on his screen: the dashboard, then the certificates ($4,956)
+    a, b = s("this is my alpha capital") - 0.05, s("over $12,000") - 0.1
+    P.screenrec(a, b, [(147.2, 1720, 720, 2560), (153.5, 2976, 470, 1300), (161.5, 774, 1013, 1300), (164.0, 1720, 720, 3000)], leak_out=False)
     # "on the platform before that I had made over $12,000 in payouts that I never got to receive" (red)
     a, b = s("over $12,000") - 0.1, until("and if i'm to go straight")
     w = P.words("$12,000", a, text="$12,000")
@@ -43,15 +35,10 @@ def v0321(P):
     P.card_title(a, b, [(w, 230, 560, None), L("in payouts that i never got to receive", a, 92, 700, "that I never got to receive", **HAND)],
                  palette="red", accent_rgb=P.RED)
     P.add(type="neonline", t0=round(a, 3), t1=round(b, 3), dur=1.2, z=30, op=0.7)
-    # the Discord reviews, one result after another, each on its word
-    a, b = s("we go to the review") - 0.05, until("this is all results")
-    P.proofs(a, b, [("crop/wall_18.07.37.png", a), ("crop/ftmo_16133.png", s("this is me of course")),
-                    ("crop/wall_18.11.10.png", s("this guy got paid")), ("crop/wall_18.06.18.png", s("this student just got")),
-                    ("crop/equityedge_1680.png", s("this is me with the")), ("crop/wall_18.06.52.png", s("this is another student")),
-                    ("crop/desmond_341.png", s("this is my student above")), ("crop/wall_18.08.02.png", s("another guy here"))])
-    # "all results, inside the same Discord community you're in... $19,000 payout, we could keep going"
-    a, b = s("this is all results") - 0.05, until("so the whole point")
-    P.results_wall(a, b, P.WALL + P.RESULTS[:4])
+    # the Discord reviews on his screen, scrolling through the students' results
+    a, b = s("we go to the review") - 0.05, until("so the whole point")
+    P.screenrec(a, b, [(226.0, 1720, 720, 2560), (227.5, 1400, 720, 2000), (264.5, 1720, 720, 1800), (272.0, 1400, 720, 2000),
+                       (280.0, 1720, 720, 2560)])
     # "from being literally a beginner in trading all the way to the advanced level"
     a, b = s("from being literally") - 0.1, until("as long as you")
     P.card_title(a, b, [L("a beginner in trading", a, 120, 470, "BEGINNER"), L("advanced level", a, 170, 650, "ADVANCED", **ACCU)])
@@ -75,7 +62,7 @@ def v0322(P):
     a, b = s("one-on-one with me") - 0.25, until("my assistant is only")
     P.card_title(a, b, [L("one-on-one", a, 190, 560, "ONE-ON-ONE", **ACCU), L("working with me", a + 1.0, 96, 710, "with me, personally", **HAND)])
     # "my assistant is only going to be answering Q&As in the Discord community"
-    a, b = s("my assistant is only") - 0.05, until("but other than that")
+    a, b = s("my assistant is only") - 0.05, until("again this program runs")
     P.results_wall(a, b, P.WALL)
     # "this program runs for six months"
     a, b = s("this program runs") - 0.1, until("within these six months")
@@ -117,7 +104,7 @@ def v0323(P):
     P.card_title(a, b, [faq_label(P, a), L("can you do this with a", a, 100, 500, "CAN YOU DO THIS WITH A"),
                         L("full-time job", a, 160, 670, "FULL-TIME JOB?", **ACCU)])
     # "yes, you can still learn how to trade"
-    a, b = s("yes you can still") - 0.1, until("whether you have")
+    a, b = s("yes you can still") - 0.1, until("while you still have")
     w = P.words("yes", a, text="YES.")
     w[0].update(accent=True, underline=True)
     P.card_title(a, b, [(w, 280, 600, None), L("you can still learn how to trade", a, 92, 750, **HAND)])
@@ -129,7 +116,7 @@ def v0323(P):
     P.title(a, b, [(w, 120, 260, None)])
     P.tiles(a, b, [("london", "location", "LONDON"), ("new york", "location", "NEW YORK"), ("asia", "location", "ASIA")], y=560)
     # "I personally trade two sessions, because the Asia session I'm always not available, it's late at night"
-    a, b = s("i personally trade") - 0.1, until("but other than that guys that's")
+    a, b = s("i personally trade") - 0.1, until("you guys do not have")
     w = P.words("i personally trade two sessions", a, text="I TRADE 2 SESSIONS")
     w[2].update(accent=True, underline=True)
     P.card_title(a, b, [(w, 110, 520, None), L("it's late at night", a, 92, 660, "Asia is late at night for me", **HAND)])
@@ -163,7 +150,7 @@ def v0324(P):
     # "you do not need that $10,000... $50,000 just to become profitable"
     a, b = s("you guys do not need that") - 0.1, until("the reason why i'm saying")
     P.card_title(a, b, [L("you guys do not need", a, 120, 470, "YOU DON'T NEED"),
-                        L("$10,000 $20,000 $30,000 $40,000 $50,000", a, 112, 630, "$10K $20K $30K $40K $50K", accent=True),
+                        L("$10,000 $20,000 $40,000 $50,000", a, 112, 630, "$10K $20K $30K $40K $50K", accent=True),
                         L("just to actually become profitable", a, 88, 760, "to become profitable", **HAND)], accent_rgb=P.RED)
     # "learning how to trade in 2026 is not the same as learning how to trade in 2015"
     a, b = s("learning how to trade in 2026") - 0.1, until("so 2015 was way")
@@ -193,7 +180,7 @@ def v0324(P):
                         L("and i managed to get a return", a, 88, 520, "and got back over", **HAND), (w, 230, 720, None)])
     P.sfx("roll10", w[0]["t"], -24)
     # "one single $100,000 account that managed to pay me over and over again"
-    a, b = s("one singular") - 0.05, until("guys you do not need to")
+    a, b = s("one single") - 0.05, until("guys you do not need")
     P.proof(a, b, "crop/ftmo_account.png", w=780, label="ONE $100K ACCOUNT")
     # "all you need is a bit of an investment and discipline"
     a, b = s("all you need is a bit of an") - 0.1, until("you guys need to trust")
