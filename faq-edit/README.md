@@ -8,10 +8,18 @@ flashes with the shimmer, and push-in / pull-out zooms on the key words. **No mu
 
 | Folder | Raw clip | The question | Raw → cut |
 | --- | --- | --- | --- |
-| [`0321/`](0321/) | `DJI_…_0321_D.MP4` | **Is JeanFX legit?** (the proof walkthrough) | 5:42 → 2:23 |
-| [`0322/`](0322/) | `DJI_…_0322_D.MP4` | **Will I work with Jean or with his assistant?** | 1:28 → 0:51 |
-| [`0323/`](0323/) | `DJI_…_0323_D.MP4` | **Can I do this with a full-time job?** | 1:55 → 0:51 |
-| [`0324/`](0324/) | `DJI_…_0324_D.MP4` | **Do I need a lot of money to start trading?** | 3:00 → 1:59 |
+| [`0321/`](0321/) | `DJI_…_0321_D.MP4` + the screen recording | **Is JeanFX legit?** (the proof walkthrough) | 5:42 → 2:15 |
+| [`0322/`](0322/) | `DJI_…_0322_D.MP4` | **Will I work with Jean or with his assistant?** | 1:28 → 0:44 |
+| [`0323/`](0323/) | `DJI_…_0323_D.MP4` | **Can I do this with a full-time job?** | 1:55 → 0:46 |
+| [`0324/`](0324/) | `DJI_…_0324_D.MP4` | **Do I need a lot of money to start trading?** | 3:00 → 1:52 |
+
+**v2:** 0321 now uses Jean's screen recording (the `screen-record-proof-jean` release, synced to the camera clip by its
+audio: the recording starts 1.03 s before the camera). It sits in a glowing frame on the money set for Topstep, FTMO,
+Alpha Capital and the Discord reviews, gliding in to each number as he says it ($36,671 payout total, the $7,304.47 FTMO
+reward and $34,219.98 overall rewards, the $4,956 Alpha Capital certificates), with his face in a small window in the
+corner. And every video was re-read for repetition: doubled phrases ("What has it done? What has it done", "$12,000,
+$12,000", "a lot of people, a lot of people"…) and repeated lines (0322's five "you'll be working one-on-one with me")
+are cut. They're in `drop` in `faq_videos.py`.
 
 `DJI_…_0320_D.MP4` (1:47) is only false starts of "Is JeanFX legit?", all re-recorded in 0321, so it isn't edited.
 
@@ -56,10 +64,7 @@ funded" ("ROMS"), "Phase 1 5K" ("case one"), "$19,000 payout" ("$90,000"). 0324:
 
 ## Check with Jean
 
-- **0321's amounts are read off his screen**, which isn't in these clips, so the screenshots shown are the matching ones
-  from `02-results-and-b-roll/` (his Topstep payout card, FTMO rewards, Alpha Capital $4,956, the Discord posts). The
-  numbers on the counters are the ones he says ($36,000, $70,000+, $12,000). If he has the screen recording, upload it
-  and it can go in instead.
+- **0321: he says "$7,334"; his screen shows the FTMO reward as $7,304.47**, so the caption reads "$7,304".
 - **0324** says "pay $200 to get access to over $100,000" and later "a fee of $500" for a $100K account; both are on
   screen as he says them.
 
